@@ -42,7 +42,7 @@
             overscroll-behavior-y: none;
         }
 
-        html, body {
+        body {
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -50,7 +50,6 @@
             height: 100vh;
             overflow: hidden;
             overscroll-behavior: none;
-            overscroll-behavior-y: none;
         }
 
         /* Header Superior */
@@ -108,7 +107,7 @@
             overflow-y: auto;
             padding: 20px;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: none;
+            overscroll-behavior-y: contain;
         }
 
         .view {
@@ -258,6 +257,10 @@
             flex: 1;
         }
 
+        .btn-ai-offline:active, .btn-ai-online:active {
+            opacity: 0.8;
+        }
+
         /* Tarjeta de Perfil */
         .profile-card {
             background-color: var(--card-bg);
@@ -286,45 +289,6 @@
             justify-content: center;
             font-size: 1.5rem;
             font-weight: bold;
-        }
-
-        /* Estilos del Calendario de Horas */
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            text-align: center;
-            font-size: 0.8rem;
-        }
-
-        .calendar-day-name {
-            font-weight: bold;
-            color: var(--text-muted);
-            padding-bottom: 5px;
-        }
-
-        .calendar-cell {
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 2px;
-            min-height: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .calendar-cell.has-hours {
-            background-color: rgba(74, 144, 226, 0.15);
-            border-color: var(--header-bg);
         }
 
         /* Barra de Navegación Inferior */
@@ -384,7 +348,7 @@
 
     <!-- Contenido Principal -->
     <div class="main-content">
-        
+       
         <!-- VISTA 1: MENÚ PRINCIPAL -->
         <div id="view-categorias" class="view active">
             <div class="menu-card" onclick="switchTab('reportes')">
@@ -407,7 +371,7 @@
                 <div class="menu-icon icon-profile">&#128100;</div>
                 <div class="menu-info">
                     <h3>Mi Perfil ("Yo")</h3>
-                    <p>Tus datos guardados, control de turnos y calendario de horas</p>
+                    <p>Tus datos guardados, control de turnos y aviso de ingreso</p>
                 </div>
             </div>
         </div>
@@ -415,7 +379,7 @@
         <!-- VISTA: GENERADOR DE REPORTES -->
         <div id="view-reportes" class="view">
             <h2 class="section-title">INFORME DE NOVEDAD</h2>
-            
+           
             <div class="row-inputs">
                 <div class="form-group">
                     <label>Manzana</label>
@@ -433,9 +397,9 @@
             </div>
 
             <div class="form-group">
-                <label>Detalle o Nota R&aacute;pida</label>
-                <textarea id="repDetalle" rows="3" placeholder="Ej: perro suelto mordiendo tachos..."></textarea>
-                
+                <label>Detalle o Nota R&aacute;pida (Escribe tus notas informales...)</label>
+                <textarea id="repDetalle" rows="3" placeholder="Ej: perro suelto mordiendo tachos, asustando vecinos..."></textarea>
+               
                 <div class="ai-buttons-container">
                     <button type="button" class="btn-ai-offline" onclick="redactarConIAOffline()">
                         <span>&#9889;</span> IA Local (Sin Internet)
@@ -448,6 +412,7 @@
 
             <div class="form-group">
                 <label>&iquest;Hubo personas involucradas / identificadas?</label>
+                <span style="font-size: 0.75rem; color: #d63031; display: block; margin-bottom: 5px;">&#9888;&#65039; Al seleccionar "S&iacute;", se habilitar&aacute;n los campos obligatorios.</span>
                 <select id="repPersonaCheck" onchange="toggleSeccionPersonas()">
                     <option value="no">No / No aplica</option>
                     <option value="si">S&iacute;, identificadas</option>
@@ -459,32 +424,39 @@
                     <label>Nombre y Apellido</label>
                     <input type="text" id="repNombrePersona" placeholder="Ej: Sergio Ram&iacute;rez">
                 </div>
+
                 <div class="form-group">
-                    <label>D.N.I.</label>
+                    <label>D.N.I. (N&uacute;mero de Documento)</label>
                     <input type="text" id="repDniPersona" placeholder="Ej: 12345678">
                 </div>
+
                 <div class="form-group">
-                    <label>Domicilio</label>
-                    <input type="text" id="repDomicilioPersona" placeholder="Ej: Manzana 87, Lote 20">
+                    <label>Domicilio / Residencia</label>
+                    <input type="text" id="repDomicilioPersona" placeholder="Ej: Manzana 87, Lote 20 (o S/D)">
                 </div>
+
                 <div class="form-group">
                     <label>Motivo del abordaje</label>
-                    <input type="text" id="repMotivoAbordaje" placeholder="Ej: Instaladores">
+                    <input type="text" id="repMotivoAbordaje" placeholder="Ej: Instaladores de c&aacute;maras extraviados">
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Estado / Conclusi&oacute;n final</label>
-                <input type="text" id="repEstadoFinal" placeholder="Ej: Sin novedades">
+                <input type="text" id="repEstadoFinal" placeholder="Ej: Sin novedades / Se acompa&ntilde;a al sector">
             </div>
 
+            <!-- Botón para generar vista previa -->
             <button class="btn-action" onclick="mostrarVistaPreviaReporte()">Generar Vista Previa del Mensaje</button>
 
+            <!-- Panel Desplegable de Vista Previa -->
             <div id="panel-vista-previa" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 30px;">
-                <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--header-bg);">&#128065;&#65039; Vista Previa (WhatsApp):</h3>
+                <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--header-bg);">&#128065;&#65039; Vista Previa del Mensaje (Listo para WhatsApp):</h3>
+               
                 <div class="form-group">
                     <textarea id="textoPreviewSalida" rows="6" readonly style="font-family: monospace; font-size: 0.85rem; background-color: var(--card-bg);"></textarea>
                 </div>
+
                 <button class="btn-action" style="margin-top: 5px; margin-bottom: 0; background-color: #25D366; color: white;" onclick="enviarReporteWhatsAppDefinitivo()">
                     &#128172; Enviar Reporte por WhatsApp
                 </button>
@@ -495,12 +467,12 @@
         <div id="view-herramientas" class="view">
             <div id="tools-menu">
                 <h2 class="section-title">Herramientas Operativas</h2>
-                
+               
                 <div class="menu-card" onclick="openRondinForm()">
                     <div class="menu-icon icon-tools">&#128692;</div>
                     <div class="menu-info">
                         <h3>ROND&Iacute;N INGRESO/SALIDA</h3>
-                        <p>Formulario de control de moto y elementos</p>
+                        <p>Formulario de control de moto y elementos de trabajo</p>
                     </div>
                 </div>
 
@@ -508,43 +480,261 @@
                     <div class="menu-icon icon-report">&#128104;&#8205;&#128187;</div>
                     <div class="menu-info">
                         <h3>PARTE DEL PORTERO (GUARDIAS)</h3>
-                        <p>Control de turnos, ingresos y elementos</p>
+                        <p>Control de turnos, ingresos, moto y elementos de cabina</p>
                     </div>
                 </div>
             </div>
 
             <!-- Formulario del Rondín -->
             <div id="form-rondin" style="display: none;">
-                <h2 class="section-title">Control de Rond&iacute;n</h2>
+                <h2 class="section-title">Control de Rond&iacute;n (Soles del Oeste)</h2>
+               
                 <div class="form-group">
                     <label>Tipo de Reporte:</label>
                     <select id="rondinTipoRegistro">
-                        <option value="ingreso">Ingreso</option>
-                        <option value="salida">Salida</option>
+                        <option value="ingreso">Ingreso (Salida: Pendiente)</option>
+                        <option value="salida">Salida (Cierre de Turno)</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label>Hora:</label>
+                    <label>Hora de Ingreso:</label>
                     <input type="text" id="rondinHoraIngreso" placeholder="Ej: 08:30">
                 </div>
+
                 <div class="form-group">
-                    <label>Personal:</label>
+                    <label>Rond&iacute;n (Personal):</label>
                     <input type="text" id="rondinNombre" placeholder="Ej: Esteban">
                 </div>
+
+                <div class="form-group">
+                    <label>Clima:</label>
+                    <input type="text" id="rondinClima" placeholder="Ej: Fr&iacute;o">
+                </div>
+
+                <div class="sub-section-title">&#10024; CONTROL DE LA MOTO:</div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; Llave:</label>
+                    <input type="text" id="rondinLlave" placeholder="Ej: si">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; Nivel de aceite:</label>
+                    <input type="text" id="rondinAceite" placeholder="Ej: medio">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; Nivel de Combustible de la moto:</label>
+                    <input type="text" id="rondinCombustibleMoto" placeholder="Ej: lleno">
+                </div>
+
+                <div class="form-group">
+                    <label>Bid&oacute;n:</label>
+                    <input type="text" id="rondinBidon" placeholder="Ej: 5 Ls">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; BALIZA AZUL:</label>
+                    <input type="text" id="rondinBaliza" placeholder="Ej: si">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; Casco:</label>
+                    <input type="text" id="rondinCasco" placeholder="si">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; Estado General:</label>
+                    <input type="text" id="rondinEstadoGeneral" placeholder="sin novedades">
+                </div>
+
+                <div class="sub-section-title">&#10024; CONTROL DE ELEMENTOS DE TRABAJO:</div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; Linterna (Estado):</label>
+                    <input type="text" id="rondinLinterna" placeholder="Ej: en funcionamiento">
+                </div>
+
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Bater&iacute;a Linterna:</label>
+                    <input type="text" id="rondinBateriaLinterna" placeholder="Ej: media carga">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128378;&#65039; Handy (Estado):</label>
+                    <input type="text" id="rondinHandy" placeholder="Ej: falla">
+                </div>
+
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Bater&iacute;a Handy:</label>
+                    <input type="text" id="rondinBateriaHandy" placeholder="Ej: 50%">
+                </div>
+
+                <div class="form-group">
+                    <label>Novedades / Observaciones:</label>
+                    <textarea id="rondinNovedades" rows="3" placeholder="hay novedades"></textarea>
+                </div>
+
                 <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rond&iacute;n a WhatsApp</button>
             </div>
 
-            <!-- Formulario Parte del Guardia -->
+            <!-- Formulario del Parte del Guardia Optimizado con Aviso de Perfil -->
             <div id="form-guardia" style="display: none;">
-                <h2 class="section-title">Parte del Portero</h2>
+                <h2 class="section-title">Parte del Portero (Guardias)</h2>
+               
+                <!-- CARTEL INFORMATIVO / AVISO PARA EL GUARDIA -->
+                <div style="background-color: rgba(74, 144, 226, 0.12); border: 1px solid var(--header-bg); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                    <p style="font-size: 0.85rem; color: var(--text-color); line-height: 1.4;">
+                        &#8505;&#65039; <b>Aviso de Memoria por Perfil:</b> El sistema recuerda el &uacute;ltimo parte personalizado que guardaste bajo tu nombre de perfil actual. Si seleccionas <i>"No"</i> en novedades, se enviar&aacute; tu &uacute;ltima configuraci&oacute;n guardada de equipos actualizando exclusivamente los accesos del d&iacute;a.
+                    </p>
+                </div>
+
                 <div class="form-group">
                     <label>Nombre del Guardia:</label>
-                    <input type="text" id="gGuardia" placeholder="Ej: Tob&iacute;as Biasucci">
+                    <input type="text" id="gGuardia" placeholder="Ej: Tobias Biasucci">
                 </div>
+
                 <div class="form-group">
-                    <label>Turno:</label>
+                    <label>Turno de Trabajo:</label>
                     <input type="text" id="gTurno" placeholder="Ej: Noche">
                 </div>
+
+                <div class="sub-section-title">FLUJO DE ACCESOS</div>
+
+                <div class="form-group">
+                    <label>&#11093; Ingreso de personas:</label>
+                    <input type="text" id="gIngresoPers" placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label>&#11093; Salida de Personas:</label>
+                    <input type="text" id="gSalidaPers" placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label>&#11093; Ingreso de veh&iacute;culos:</label>
+                    <input type="text" id="gIngresoVeh" placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label>&#11093; Salida de veh&iacute;culos:</label>
+                    <input type="text" id="gSalidaVeh" placeholder="0">
+                </div>
+
+                <div class="sub-section-title">COMBUSTIBLE Y BATER&Iacute;AS</div>
+
+                <div class="form-group">
+                    <label>&#9981;&#65039; Nivel de Combustible (Moto):</label>
+                    <input type="text" id="gMotoCombustible" placeholder="Ej: Completo / 1/2">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128739;&#65039; Nivel de Combustible (Bid&oacute;n):</label>
+                    <input type="text" id="gMotoBidon" placeholder="Ej: 2.5 lts">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128267; Bater&iacute;a Linterna Puesto (Guardia):</label>
+                    <input type="text" id="gLinterna1" placeholder="Ej: Carga Completa">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128267; Bater&iacute;a Linterna Rond&iacute;n:</label>
+                    <input type="text" id="gLinterna2" placeholder="Ej: Carga Completa">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128267; Bater&iacute;a Handy Puesto (Guardia):</label>
+                    <input type="text" id="gHandy1" placeholder="Ej: Media Carga">
+                </div>
+
+                <div class="form-group">
+                    <label>&#128267; Bater&iacute;a Handy Rond&iacute;n:</label>
+                    <input type="text" id="gHandy2" placeholder="Ej: Carga Completa">
+                </div>
+
+                <div class="form-group">
+                    <label>&#9888;&#65039; &iquest;Hay novedades o anomal&iacute;as en instalaciones/equipos?</label>
+                    <select id="gSelectorNovedades" onchange="toggleDetallesNovedadesGuardia()">
+                        <option value="no">No (Mantener mi &uacute;ltima configuraci&oacute;n / Est&aacute;ndar)</option>
+                        <option value="si">S&iacute; (Modificar detalles y equipos)</option>
+                    </select>
+                </div>
+
+                <!-- Sección Oculta de Novedades Detalladas -->
+                <div id="seccion-novedades-guardia" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Detalle Extra de Equipos e Instalaciones:</h4>
+                   
+                    <div class="form-group">
+                        <label>Observaci&oacute;n General / Novedades:</label>
+                        <textarea id="gObservacion" rows="2" placeholder="Ej: Novedad espec&iacute;fica..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Llave de la Moto:</label>
+                        <input type="text" id="gMotoLlave" value="si">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nivel de Aceite Moto:</label>
+                        <input type="text" id="gMotoAceite" value="Completo">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Baliza Azul y Casco:</label>
+                        <input type="text" id="gMotoBaliza" value="si">
+                        <input type="text" id="gMotoCasco" value="si" style="margin-top:5px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado General de la Moto:</label>
+                        <input type="text" id="gMotoEstado" value="En funcionamiento">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Linternas Cantidad / Estado General:</label>
+                        <input type="text" id="gLinternaCant" value="2">
+                        <input type="text" id="gEstadoLinternas" value="Ambas en funcionamiento" style="margin-top:5px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Handys Cantidad / Estado General:</label>
+                        <input type="text" id="gHandyCant" value="2">
+                        <input type="text" id="gEstadoHandys" value="Ambos en funcionamiento" style="margin-top:5px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Limpieza y Estado Cabina:</label>
+                        <input type="text" id="gCabinaLimpieza" value="Cabina limpia y en orden">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Caloventor:</label>
+                        <input type="text" id="gCaloventor" value="En funcionamiento">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Monitores / C&aacute;maras:</label>
+                        <input type="text" id="gMonitores" value="Sin novedades">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pava El&eacute;ctrica:</label>
+                        <input type="text" id="gPava" value="En funcionamiento y sin problemas">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bater&iacute;as:</label>
+                        <input type="text" id="gBaterias" value="2 colocadas - sin conexi&oacute;n">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Portero Entrante y Responsable:</label>
+                    <input type="text" id="gResponsable" placeholder="Ej: Isa&iacute;as Ojeda">
+                </div>
+
                 <button class="btn-action" onclick="generarReporteGuardiaWhatsApp()">Enviar Parte a WhatsApp</button>
             </div>
         </div>
@@ -552,7 +742,7 @@
         <!-- VISTA 3: PERFIL / YO -->
         <div id="view-perfil" class="view">
             <h2 class="section-title">Mi Perfil (Guardia)</h2>
-            
+           
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="profile-avatar">&#128104;&#8205;&#128187;</div>
@@ -563,18 +753,25 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Nombre y Apellido:</label>
+                    <label>Nombre y Apellido (Guardia):</label>
                     <input type="text" id="perfilNombreInput" placeholder="Ej: Tob&iacute;as Biasucci" oninput="guardarDatosPerfil()">
                 </div>
+
                 <div class="form-group">
                     <label>N&uacute;mero de Legajo / DNI:</label>
                     <input type="text" id="perfilLegajo" placeholder="Ej: 42356789" oninput="guardarDatosPerfil()">
                 </div>
+
+                <div class="form-group">
+                    <label>Puesto Asignado:</label>
+                    <input type="text" id="perfilPuesto" value="Puesto 2 (Acceso Secundario)" readonly>
+                </div>
             </div>
 
             <div class="profile-card">
-                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno (PIN Aleatorio)</h3>
-                
+                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra el inicio de tu jornada. Se abrir&aacute; un panel r&aacute;pido para indicar a qui&eacute;n relevas.</p>
+               
                 <div class="form-group">
                     <label>Estado Actual:</label>
                     <input type="text" id="perfilEstadoTurno" value="Fuera de Turno" readonly style="font-weight: bold; color: #e84393;">
@@ -582,55 +779,21 @@
 
                 <button class="btn-action" style="margin-bottom: 10px;" onclick="gestionarTurnoClick()" id="btnFichaje">Iniciar Turno</button>
 
-                <!-- Panel de Relevo y PIN -->
+                <!-- Panel Desplegable para el Relevo -->
                 <div id="panel-relevo-desplegable" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
-                    <div id="seccion-pin-ingreso" style="display: none;">
-                        <p style="font-size: 0.85rem; color: #d63031; margin-bottom: 8px;">&#9888;&#65039; Hay un turno anterior activo. Ingrese el c&oacute;digo PIN de 4 d&iacute;gitos provisto por el guardia saliente:</p>
-                        <div class="form-group">
-                            <label>C&oacute;digo PIN de Relevo (4 d&iacute;gitos):</label>
-                            <input type="text" id="inputPinRelevo" maxlength="4" placeholder="Ej: 4892">
-                        </div>
-                    </div>
-
+                    <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Datos del Relevo para WhatsApp:</h4>
+                   
                     <div class="form-group">
                         <label>Compa&ntilde;ero al que Relevas:</label>
                         <input type="text" id="relevoCompanero" placeholder="Ej: Isa&iacute;as Ojeda">
                     </div>
+
                     <div class="form-group">
                         <label>Turno:</label>
                         <input type="text" id="relevoTurno" placeholder="Ej: Ma&ntilde;ana / Noche">
                     </div>
 
-                    <button class="btn-action" style="margin-top: 10px; margin-bottom: 0; background-color: #00b894;" onclick="confirmarInicioTurno()">Confirmar e Iniciar Turno</button>
-                </div>
-            </div>
-
-            <!-- Calendario de Horas Trabajadas -->
-            <div class="profile-card">
-                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Historial de Horas (Calendario)</h3>
-                
-                <div class="calendar-header">
-                    <button class="icon-btn" onclick="cambiarMes(-1)" style="color: var(--text-color);">&#9664;</button>
-                    <h4 id="calendarMonthYearTitle" style="font-size: 0.95rem;">Enero 2026</h4>
-                    <button class="icon-btn" onclick="cambiarMes(1)" style="color: var(--text-color);">&#9654;</button>
-                </div>
-
-                <div class="calendar-grid" style="margin-bottom: 8px;">
-                    <div class="calendar-day-name">Lu</div>
-                    <div class="calendar-day-name">Ma</div>
-                    <div class="calendar-day-name">Mi</div>
-                    <div class="calendar-day-name">Ju</div>
-                    <div class="calendar-day-name">Vi</div>
-                    <div class="calendar-day-name">S&aacute;</div>
-                    <div class="calendar-day-name">Do</div>
-                </div>
-
-                <div id="calendarGridDays" class="calendar-grid">
-                    <!-- Los días se generan con JavaScript -->
-                </div>
-
-                <div style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; text-align: right;">
-                    Total mes: <span id="totalHorasMes" style="color: var(--header-bg);">0 hs</span>
+                    <button class="btn-action" style="margin-top: 10px; margin-bottom: 0; background-color: #00b894;" onclick="confirmarInicioTurno()">Confirmar e Enviar Aviso</button>
                 </div>
             </div>
         </div>
@@ -643,13 +806,13 @@
             <span class="icon">&#127968;</span>
             <span>Men&uacute;</span>
         </button>
-        <button class="nav-item" id="nav-btn-reportes" onclick="switchTab('reportes')">
-            <span class="icon">&#128680;</span>
-            <span>Reportes</span>
-        </button>
         <button class="nav-item" id="nav-btn-herramientas" onclick="switchTab('herramientas')">
             <span class="icon">&#128736;&#65039;</span>
             <span>Herramientas</span>
+        </button>
+        <button class="nav-item" id="nav-btn-reportes" onclick="switchTab('reportes')">
+            <span class="icon">&#128680;</span>
+            <span>Reportes</span>
         </button>
         <button class="nav-item" id="nav-btn-perfil" onclick="switchTab('perfil')">
             <span class="icon">&#128100;</span>
@@ -658,65 +821,6 @@
     </nav>
 
     <script>
-        // --- SISTEMA DE VERIFICACIÓN DE ACTUALIZACIONES ---
-        const VERSION_ACTUAL = "1.1.0";
-
-        async function verificarActualizacion() {
-            try {
-                // Intenta buscar un archivo version.json en el servidor/hosting donde esté alojada la app
-                const response = await fetch('version.json?t=' + new Date().getTime());
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.version && data.version !== VERSION_ACTUAL) {
-                        mostrarAvisoActualizacion(data.version);
-                    }
-                }
-            } catch (error) {
-                // Modo offline o sin archivo remoto: opera normalmente sin interrumpir
-                console.log("Sin conexión o sin archivo de versión remoto.");
-            }
-        }
-
-        function mostrarAvisoActualizacion(nuevaVersion) {
-            let banner = document.getElementById('update-banner');
-            if (!banner) {
-                banner = document.createElement('div');
-                banner.id = 'update-banner';
-                banner.style.cssText = "position: fixed; top: 0; left: 0; right: 0; background-color: #25D366; color: white; padding: 14px; text-align: center; font-weight: bold; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.3); cursor: pointer;";
-                banner.innerHTML = `&#128227; ¡Hay una nueva versión disponible (${nuevaVersion})! Toca aquí para actualizar.`;
-                banner.onclick = function() {
-                    // Limpia caché local si existe y recarga fresco
-                    if (window.caches) {
-                        caches.keys().then(names => {
-                            names.forEach(name => caches.delete(name));
-                        });
-                    }
-                    window.location.reload(true);
-                };
-                document.body.prepend(banner);
-            }
-        }
-
-        // --- BLOQUEO TOTAL DE RECARGA POR GESTO TÁCTIL (PULL-TO-REFRESH) ---
-        let touchstartY = 0;
-
-        window.addEventListener('touchstart', function(e) {
-            touchstartY = e.touches[0].clientY;
-        }, { passive: true });
-
-        window.addEventListener('touchmove', function(e) {
-            const touchY = e.touches[0].clientY;
-            const touchYDelta = touchY - touchstartY;
-            
-            // Si estamos en el tope superior y el usuario desliza hacia abajo, cancelamos la recarga nativa
-            if (window.scrollY === 0 && touchYDelta > 0) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        // Variables globales para el calendario y control de turnos
-        let fechaActualCalendario = new Date();
-
         function switchTab(tabId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + tabId).classList.add('active');
@@ -767,7 +871,6 @@
             document.getElementById('back-icon').style.display = 'inline';
         }
 
-        // --- LÓGICA DE PERFIL, TURNO Y PIN DE RELEVO ---
         function guardarDatosPerfil() {
             const nombre = document.getElementById('perfilNombreInput').value;
             const legajo = document.getElementById('perfilLegajo').value;
@@ -779,128 +882,30 @@
         function gestionarTurnoClick() {
             const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
             const panel = document.getElementById('panel-relevo-desplegable');
-            const seccionPin = document.getElementById('seccion-pin-ingreso');
-            const btnFichaje = document.getElementById('btnFichaje');
-
             if (turnoActivo === 'true') {
-                if (confirm('¿Desea finalizar su turno actual?')) {
-                    finalizarTurnoActual();
+                if (confirm('&iquest;Desea finalizar su turno actual?')) {
+                    localStorage.setItem('puesto2_turnoActivo', 'false');
+                    document.getElementById('perfilEstadoTurno').value = 'Fuera de Turno';
+                    document.getElementById('perfilEstadoTurno').style.color = '#e84393';
+                    document.getElementById('btnFichaje').innerText = 'Iniciar Turno';
+                    panel.style.display = 'none';
+                    alert('Turno finalizado correctamente.');
                 }
             } else {
                 panel.style.display = 'block';
-                const hayTurnoPrevio = localStorage.getItem('puesto2_turnoPendienteCierre');
-                if (hayTurnoPrevio === 'true') {
-                    seccionPin.style.display = 'block';
-                } else {
-                    seccionPin.style.display = 'none';
-                }
             }
         }
 
         function confirmarInicioTurno() {
-            const seccionPin = document.getElementById('seccion-pin-ingreso');
-            const hayTurnoPrevio = localStorage.getItem('puesto2_turnoPendienteCierre');
-
-            if (hayTurnoPrevio === 'true' && seccionPin.style.display === 'block') {
-                const pinIngresado = document.getElementById('inputPinRelevo').value;
-                const pinGenerado = localStorage.getItem('puesto2_pinActual');
-                if (pinIngresado !== pinGenerado) {
-                    alert('Código PIN incorrecto o faltante provisto por el guardia saliente.');
-                    return;
-                }
-            }
-
             localStorage.setItem('puesto2_turnoActivo', 'true');
-            localStorage.setItem('puesto2_turnoPendienteCierre', 'true');
-            localStorage.setItem('puesto2_horaInicio', new Date().toISOString());
-
             document.getElementById('perfilEstadoTurno').value = 'En Turno Activo';
             document.getElementById('perfilEstadoTurno').style.color = '#00b894';
             document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
             document.getElementById('panel-relevo-desplegable').style.display = 'none';
-
-            alert('¡Turno iniciado con éxito!');
+            alert('&iexcl;Turno iniciado con &eacute;xito!');
         }
 
-        function finalizarTurnoActual() {
-            const horaInicioStr = localStorage.getItem('puesto2_horaInicio');
-            if (horaInicioStr) {
-                const inicio = new Date(horaInicioStr);
-                const fin = new Date();
-                const diffMs = fin - inicio;
-                const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
-
-                const fechaKey = fin.toISOString().split('T')[0];
-                let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
-                historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
-                localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
-            }
-
-            const nuevoPin = Math.floor(1000 + Math.random() * 9000).toString();
-            localStorage.setItem('puesto2_pinActual', nuevoPin);
-            localStorage.setItem('puesto2_turnoActivo', 'false');
-
-            document.getElementById('perfilEstadoTurno').value = 'Fuera de Turno';
-            document.getElementById('perfilEstadoTurno').style.color = '#e84393';
-            document.getElementById('btnFichaje').innerText = 'Iniciar Turno';
-
-            alert(`Turno finalizado. El código PIN generado de 4 dígitos para el relevo es: ${nuevoPin}`);
-            renderizarCalendario();
-        }
-
-        // --- CALENDARIO MENSUAL DE HORAS ---
-        function cambiarMes(dir) {
-            fechaActualCalendario.setMonth(fechaActualCalendario.getMonth() + dir);
-            renderizarCalendario();
-        }
-
-        function renderizarCalendario() {
-            const year = fechaActualCalendario.getFullYear();
-            const month = fechaActualCalendario.getMonth();
-            
-            const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            document.getElementById('calendarMonthYearTitle').innerText = `${mesesNombres[month]} ${year}`;
-
-            const primerDiaIndex = (new Date(year, month, 1).getDay() + 6) % 7;
-            const totalDiasMes = new Date(year, month + 1, 0).getDate();
-
-            const grid = document.getElementById('calendarGridDays');
-            grid.innerHTML = '';
-
-            let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
-            let totalMes = 0;
-
-            for (let i = 0; i < primerDiaIndex; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'calendar-cell';
-                grid.appendChild(cell);
-            }
-
-            for (let dia = 1; dia <= totalDiasMes; dia++) {
-                const cell = document.createElement('div');
-                cell.className = 'calendar-cell';
-                
-                const mesStr = String(month + 1).padStart(2, '0');
-                const diaStr = String(dia).padStart(2, '0');
-                const fechaKey = `${year}-${mesStr}-${diaStr}`;
-
-                const horasDia = historial[fechaKey] || 0;
-                if (horasDia > 0) {
-                    cell.classList.add('has-hours');
-                    totalMes += horasDia;
-                }
-
-                cell.innerHTML = `<span style="font-weight:bold;">${dia}</span><span style="font-size:0.65rem; color:var(--header-bg);">${horasDia > 0 ? horasDia + 'h' : ''}</span>`;
-                grid.appendChild(cell);
-            }
-
-            document.getElementById('totalHorasMes').innerText = totalMes.toFixed(1) + ' hs';
-        }
-
-        // Inicialización al cargar la app
         window.onload = function() {
-            verificarActualizacion();
-
             const nombreGuarda = localStorage.getItem('puesto2_nombre');
             const legajoGuarda = localStorage.getItem('puesto2_legajo');
             if (nombreGuarda) {
@@ -910,15 +915,12 @@
             if (legajoGuarda) {
                 document.getElementById('perfilLegajo').value = legajoGuarda;
             }
-
             const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
             if (turnoActivo === 'true') {
                 document.getElementById('perfilEstadoTurno').value = 'En Turno Activo';
                 document.getElementById('perfilEstadoTurno').style.color = '#00b894';
                 document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
             }
-
-            renderizarCalendario();
         };
 
         function redactarConIAOffline() { alert("IA Local simulada: Redacción optimizada."); }
