@@ -119,7 +119,7 @@
             display: block;
         }
 
-        /* Tarjetas de Menú */
+        /* Tarjetas de MenÃº */
         .menu-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -327,7 +327,7 @@
             border-color: var(--header-bg);
         }
 
-        /* Barra de Navegación Inferior */
+        /* Barra de NavegaciÃ³n Inferior */
         nav.bottom-nav {
             background-color: var(--nav-bg);
             border-top: 1px solid var(--border-color);
@@ -385,7 +385,7 @@
     <!-- Contenido Principal -->
     <div class="main-content">
         
-        <!-- VISTA 1: MENÚ PRINCIPAL -->
+        <!-- VISTA 1: MENÃš PRINCIPAL -->
         <div id="view-categorias" class="view active">
             <div class="menu-card" onclick="switchTab('reportes')">
                 <div class="menu-icon icon-report">&#128680;</div>
@@ -491,7 +491,7 @@
             </div>
         </div>
 
-        <!-- VISTA 2: MENÚ DE HERRAMIENTAS -->
+        <!-- VISTA 2: MENÃš DE HERRAMIENTAS -->
         <div id="view-herramientas" class="view">
             <div id="tools-menu">
                 <h2 class="section-title">Herramientas Operativas</h2>
@@ -513,7 +513,7 @@
                 </div>
             </div>
 
-            <!-- Formulario del Rondín -->
+            <!-- Formulario del RondÃ­n -->
             <div id="form-rondin" style="display: none;">
                 <h2 class="section-title">Control de Rond&iacute;n</h2>
                 <div class="form-group">
@@ -626,7 +626,7 @@
                 </div>
 
                 <div id="calendarGridDays" class="calendar-grid">
-                    <!-- Los días se generan con JavaScript -->
+                    <!-- Los dÃ­as se generan con JavaScript -->
                 </div>
 
                 <div style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; text-align: right;">
@@ -637,7 +637,7 @@
 
     </div>
 
-    <!-- Barra de Navegación Inferior -->
+    <!-- Barra de NavegaciÃ³n Inferior -->
     <nav class="bottom-nav">
         <button class="nav-item active" id="nav-btn-categorias" onclick="switchTab('categorias')">
             <span class="icon">&#127968;</span>
@@ -658,6 +658,62 @@
     </nav>
 
     <script>
+        // --- SISTEMA DE VERIFICACIÃ“N DE ACTUALIZACIONES ---
+        const VERSION_ACTUAL = "1.1.0";
+
+        async function verificarActualizacion() {
+            try {
+                // Intenta buscar un archivo version.json en el servidor/hosting donde estÃ© alojada la app
+                const response = await fetch('version.json?t=' + new Date().getTime());
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.version && data.version !== VERSION_ACTUAL) {
+                        mostrarAvisoActualizacion(data.version);
+                    }
+                }
+            } catch (error) {
+                // Modo offline o sin archivo remoto: opera normalmente sin interrumpir
+                console.log("Sin conexiÃ³n o sin archivo de versiÃ³n remoto.");
+            }
+        }
+
+        function mostrarAvisoActualizacion(nuevaVersion) {
+            let banner = document.getElementById('update-banner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'update-banner';
+                banner.style.cssText = "position: fixed; top: 0; left: 0; right: 0; background-color: #25D366; color: white; padding: 14px; text-align: center; font-weight: bold; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.3); cursor: pointer;";
+                banner.innerHTML = `&#128227; Â¡Hay una nueva versiÃ³n disponible (${nuevaVersion})! Toca aquÃ­ para actualizar.`;
+                banner.onclick = function() {
+                    // Limpia cachÃ© local si existe y recarga fresco
+                    if (window.caches) {
+                        caches.keys().then(names => {
+                            names.forEach(name => caches.delete(name));
+                        });
+                    }
+                    window.location.reload(true);
+                };
+                document.body.prepend(banner);
+            }
+        }
+
+        // --- BLOQUEO TOTAL DE RECARGA POR GESTO TÃCTIL (PULL-TO-REFRESH) ---
+        let touchstartY = 0;
+
+        window.addEventListener('touchstart', function(e) {
+            touchstartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchmove', function(e) {
+            const touchY = e.touches[0].clientY;
+            const touchYDelta = touchY - touchstartY;
+            
+            // Si estamos en el tope superior y el usuario desliza hacia abajo, cancelamos la recarga nativa
+            if (window.scrollY === 0 && touchYDelta > 0) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
         // Variables globales para el calendario y control de turnos
         let fechaActualCalendario = new Date();
 
@@ -711,7 +767,7 @@
             document.getElementById('back-icon').style.display = 'inline';
         }
 
-        // --- LÓGICA DE PERFIL, TURNO Y PIN DE RELEVO ---
+        // --- LÃ“GICA DE PERFIL, TURNO Y PIN DE RELEVO ---
         function guardarDatosPerfil() {
             const nombre = document.getElementById('perfilNombreInput').value;
             const legajo = document.getElementById('perfilLegajo').value;
@@ -727,12 +783,10 @@
             const btnFichaje = document.getElementById('btnFichaje');
 
             if (turnoActivo === 'true') {
-                // Finalizar turno actual y generar PIN para el siguiente
-                if (confirm('¿Desea finalizar su turno actual?')) {
+                if (confirm('Â¿Desea finalizar su turno actual?')) {
                     finalizarTurnoActual();
                 }
             } else {
-                // Intentar iniciar turno
                 panel.style.display = 'block';
                 const hayTurnoPrevio = localStorage.getItem('puesto2_turnoPendienteCierre');
                 if (hayTurnoPrevio === 'true') {
@@ -751,12 +805,11 @@
                 const pinIngresado = document.getElementById('inputPinRelevo').value;
                 const pinGenerado = localStorage.getItem('puesto2_pinActual');
                 if (pinIngresado !== pinGenerado) {
-                    alert('Código PIN incorrecto o faltante provisto por el guardia saliente.');
+                    alert('CÃ³digo PIN incorrecto o faltante provisto por el guardia saliente.');
                     return;
                 }
             }
 
-            // Iniciar nuevo turno
             localStorage.setItem('puesto2_turnoActivo', 'true');
             localStorage.setItem('puesto2_turnoPendienteCierre', 'true');
             localStorage.setItem('puesto2_horaInicio', new Date().toISOString());
@@ -766,7 +819,7 @@
             document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
             document.getElementById('panel-relevo-desplegable').style.display = 'none';
 
-            alert('¡Turno iniciado con éxito!');
+            alert('Â¡Turno iniciado con Ã©xito!');
         }
 
         function finalizarTurnoActual() {
@@ -777,14 +830,12 @@
                 const diffMs = fin - inicio;
                 const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
 
-                // Guardar en historial de horas por fecha (YYYY-MM-DD)
                 const fechaKey = fin.toISOString().split('T')[0];
                 let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
                 historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
                 localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
             }
 
-            // Generar nuevo PIN aleatorio de 4 dígitos para el siguiente relevo
             const nuevoPin = Math.floor(1000 + Math.random() * 9000).toString();
             localStorage.setItem('puesto2_pinActual', nuevoPin);
             localStorage.setItem('puesto2_turnoActivo', 'false');
@@ -793,7 +844,7 @@
             document.getElementById('perfilEstadoTurno').style.color = '#e84393';
             document.getElementById('btnFichaje').innerText = 'Iniciar Turno';
 
-            alert(`Turno finalizado. El código PIN generado de 4 dígitos para el relevo es: ${nuevoPin}`);
+            alert(`Turno finalizado. El cÃ³digo PIN generado de 4 dÃ­gitos para el relevo es: ${nuevoPin}`);
             renderizarCalendario();
         }
 
@@ -810,7 +861,7 @@
             const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
             document.getElementById('calendarMonthYearTitle').innerText = `${mesesNombres[month]} ${year}`;
 
-            const primerDiaIndex = (new Date(year, month, 1).getDay() + 6) % 7; // Lunes como inicio
+            const primerDiaIndex = (new Date(year, month, 1).getDay() + 6) % 7;
             const totalDiasMes = new Date(year, month + 1, 0).getDate();
 
             const grid = document.getElementById('calendarGridDays');
@@ -819,14 +870,12 @@
             let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
             let totalMes = 0;
 
-            // Días vacíos previos
             for (let i = 0; i < primerDiaIndex; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'calendar-cell';
                 grid.appendChild(cell);
             }
 
-            // Días del mes
             for (let dia = 1; dia <= totalDiasMes; dia++) {
                 const cell = document.createElement('div');
                 cell.className = 'calendar-cell';
@@ -848,8 +897,10 @@
             document.getElementById('totalHorasMes').innerText = totalMes.toFixed(1) + ' hs';
         }
 
-        // Inicialización al cargar la app
+        // InicializaciÃ³n al cargar la app
         window.onload = function() {
+            verificarActualizacion();
+
             const nombreGuarda = localStorage.getItem('puesto2_nombre');
             const legajoGuarda = localStorage.getItem('puesto2_legajo');
             if (nombreGuarda) {
@@ -870,8 +921,8 @@
             renderizarCalendario();
         };
 
-        function redactarConIAOffline() { alert("IA Local simulada: Redacción optimizada."); }
-        function redactarConIAOnline() { alert("IA Online simulada: Conexión establecida."); }
+        function redactarConIAOffline() { alert("IA Local simulada: RedacciÃ³n optimizada."); }
+        function redactarConIAOnline() { alert("IA Online simulada: ConexiÃ³n establecida."); }
         function mostrarVistaPreviaReporte() {
             const m = document.getElementById('repManzana').value;
             const l = document.getElementById('repLote').value;
@@ -881,7 +932,7 @@
             document.getElementById('panel-vista-previa').style.display = 'block';
         }
         function enviarReporteWhatsAppDefinitivo() { alert("Redirigiendo a WhatsApp..."); }
-        function generarReporteRondinWhatsApp() { alert("Enviando rondín..."); }
+        function generarReporteRondinWhatsApp() { alert("Enviando rondÃ­n..."); }
         function generarReporteGuardiaWhatsApp() { alert("Enviando parte..."); }
         function toggleDetallesNovedadesGuardia() {
             const val = document.getElementById('gSelectorNovedades').value;
