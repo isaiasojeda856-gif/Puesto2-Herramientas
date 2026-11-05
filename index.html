@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.S. Sentir - Puesto 2</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --header-bg: #4a90e2;
+            --header-text: #ffffff;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+            --nav-bg: #ffffff;
+            --nav-active: #4a90e2;
+            --nav-inactive: #999999;
+            --input-bg: #f9f9f9;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --header-bg: #1f1f1f;
+            --header-text: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --border-color: #2c2c2c;
+            --nav-bg: #1f1f1f;
+            --nav-active: #4a90e2;
+            --nav-inactive: #666666;
+            --input-bg: #2a2a2a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            overscroll-behavior-y: none;
+        }
+
+        html, body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            overscroll-behavior: none;
+            overscroll-behavior-y: none;
+        }
+
+        /* Header Superior */
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        header h1 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        #back-icon {
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .icon-btn:active {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* Contenedor de Vistas */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: none;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Tarjetas de Menú */
+        .menu-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .icon-report { background-color: rgba(0, 184, 148, 0.15); }
+        .icon-tools { background-color: rgba(232, 67, 147, 0.15); }
+        .icon-profile { background-color: rgba(108, 92, 231, 0.15); }
+
+        .menu-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .menu-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Formularios Operativos */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .row-inputs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row-inputs .form-group {
+            flex: 1;
+        }
+
+        .sub-section-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--header-bg);
+            margin: 20px 0 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .btn-action {
+            background-color: #0084d1;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn-action:active {
+            opacity: 0.8;
+        }
+
+        /* Contenedor de Botones de IA */
+        .ai-buttons-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-ai-offline {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .btn-ai-online {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: #121212;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+        }
+
+        /* Tarjeta de Perfil */
+        .profile-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background-color: #6c5ce7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Estilos del Calendario de Horas */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .calendar-day-name {
+            font-weight: bold;
+            color: var(--text-muted);
+            padding-bottom: 5px;
+        }
+
+        .calendar-cell {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 2px;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-cell.has-hours {
+            background-color: rgba(74, 144, 226, 0.15);
+            border-color: var(--header-bg);
+        }
+
+        /* Barra de Navegación Inferior */
+        nav.bottom-nav {
+            background-color: var(--nav-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            height: 60px;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--nav-inactive);
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.75rem;
+        }
+
+        .nav-item.active {
+            color: var(--nav-active);
+            font-weight: 600;
+        }
+
+        .nav-item span.icon {
+            font-size: 1.25rem;
+            margin-bottom: 2px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <!-- Header Superior -->
+    <header>
+        <div class="header-title-container" onclick="goHome()" id="header-nav" title="Volver al inicio">
+            <span id="back-icon">&larr;</span>
+            <h1 id="app-title">B.S. Sentir - Puesto 2</h1>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Cambiar Tema">&#127769;</button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <div class="main-content">
+        
+        <!-- VISTA 1: MENÚ PRINCIPAL -->
+        <div id="view-categorias" class="view active">
+            <div class="menu-card" onclick="switchTab('reportes')">
+                <div class="menu-icon icon-report">&#128680;</div>
+                <div class="menu-info">
+                    <h3>Generador de Reportes</h3>
+                    <p>Informe de novedad e incidencias con asistencia de IA</p>
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="switchTab('herramientas')">
+                <div class="menu-icon icon-tools">&#128736;&#65039;</div>
+                <div class="menu-info">
+                    <h3>Herramientas y Gu&iacute;as</h3>
+                    <p>Acceso a rond&iacute;n y parte del portero</p>
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="switchTab('perfil')">
+                <div class="menu-icon icon-profile">&#128100;</div>
+                <div class="menu-info">
+                    <h3>Mi Perfil ("Yo")</h3>
+                    <p>Tus datos guardados, control de turnos y calendario de horas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA: GENERADOR DE REPORTES -->
+        <div id="view-reportes" class="view">
+            <h2 class="section-title">INFORME DE NOVEDAD</h2>
+            
+            <div class="row-inputs">
+                <div class="form-group">
+                    <label>Manzana</label>
+                    <input type="text" id="repManzana" placeholder="Ej: 87">
+                </div>
+                <div class="form-group">
+                    <label>Lote</label>
+                    <input type="text" id="repLote" placeholder="Ej: 12">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Incidencia</label>
+                <input type="text" id="repTipoIncidencia" placeholder="Ej: Veh&iacute;culo sospechoso / Animal suelto">
+            </div>
+
+            <div class="form-group">
+                <label>Detalle o Nota R&aacute;pida</label>
+                <textarea id="repDetalle" rows="3" placeholder="Ej: perro suelto mordiendo tachos..."></textarea>
+                
+                <div class="ai-buttons-container">
+                    <button type="button" class="btn-ai-offline" onclick="redactarConIAOffline()">
+                        <span>&#9889;</span> IA Local (Sin Internet)
+                    </button>
+                    <button type="button" class="btn-ai-online" onclick="redactarConIAOnline()">
+                        <span>&#127760;</span> IA Online (Con Internet)
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>&iquest;Hubo personas involucradas / identificadas?</label>
+                <select id="repPersonaCheck" onchange="toggleSeccionPersonas()">
+                    <option value="no">No / No aplica</option>
+                    <option value="si">S&iacute;, identificadas</option>
+                </select>
+            </div>
+
+            <div id="seccion-datos-persona" style="display: none; border-left: 3px solid #0084d1; padding-left: 12px; margin-bottom: 15px;">
+                <div class="form-group">
+                    <label>Nombre y Apellido</label>
+                    <input type="text" id="repNombrePersona" placeholder="Ej: Sergio Ram&iacute;rez">
+                </div>
+                <div class="form-group">
+                    <label>D.N.I.</label>
+                    <input type="text" id="repDniPersona" placeholder="Ej: 12345678">
+                </div>
+                <div class="form-group">
+                    <label>Domicilio</label>
+                    <input type="text" id="repDomicilioPersona" placeholder="Ej: Manzana 87, Lote 20">
+                </div>
+                <div class="form-group">
+                    <label>Motivo del abordaje</label>
+                    <input type="text" id="repMotivoAbordaje" placeholder="Ej: Instaladores">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Estado / Conclusi&oacute;n final</label>
+                <input type="text" id="repEstadoFinal" placeholder="Ej: Sin novedades">
+            </div>
+
+            <button class="btn-action" onclick="mostrarVistaPreviaReporte()">Generar Vista Previa del Mensaje</button>
+
+            <div id="panel-vista-previa" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 30px;">
+                <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--header-bg);">&#128065;&#65039; Vista Previa (WhatsApp):</h3>
+                <div class="form-group">
+                    <textarea id="textoPreviewSalida" rows="6" readonly style="font-family: monospace; font-size: 0.85rem; background-color: var(--card-bg);"></textarea>
+                </div>
+                <button class="btn-action" style="margin-top: 5px; margin-bottom: 0; background-color: #25D366; color: white;" onclick="enviarReporteWhatsAppDefinitivo()">
+                    &#128172; Enviar Reporte por WhatsApp
+                </button>
+            </div>
+        </div>
+
+        <!-- VISTA 2: MENÚ DE HERRAMIENTAS -->
+        <div id="view-herramientas" class="view">
+            <div id="tools-menu">
+                <h2 class="section-title">Herramientas Operativas</h2>
+                
+                <div class="menu-card" onclick="openRondinForm()">
+                    <div class="menu-icon icon-tools">&#128692;</div>
+                    <div class="menu-info">
+                        <h3>ROND&Iacute;N INGRESO/SALIDA</h3>
+                        <p>Formulario de control de moto y elementos</p>
+                    </div>
+                </div>
+
+                <div class="menu-card" onclick="openGuardiaForm()">
+                    <div class="menu-icon icon-report">&#128104;&#8205;&#128187;</div>
+                    <div class="menu-info">
+                        <h3>PARTE DEL PORTERO (GUARDIAS)</h3>
+                        <p>Control de turnos, ingresos y elementos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario del Rondín -->
+            <div id="form-rondin" style="display: none;">
+                <h2 class="section-title">Control de Rond&iacute;n</h2>
+                <div class="form-group">
+                    <label>Tipo de Reporte:</label>
+                    <select id="rondinTipoRegistro">
+                        <option value="ingreso">Ingreso</option>
+                        <option value="salida">Salida</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Hora:</label>
+                    <input type="text" id="rondinHoraIngreso" placeholder="Ej: 08:30">
+                </div>
+                <div class="form-group">
+                    <label>Personal:</label>
+                    <input type="text" id="rondinNombre" placeholder="Ej: Esteban">
+                </div>
+                <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rond&iacute;n a WhatsApp</button>
+            </div>
+
+            <!-- Formulario Parte del Guardia -->
+            <div id="form-guardia" style="display: none;">
+                <h2 class="section-title">Parte del Portero</h2>
+                <div class="form-group">
+                    <label>Nombre del Guardia:</label>
+                    <input type="text" id="gGuardia" placeholder="Ej: Tob&iacute;as Biasucci">
+                </div>
+                <div class="form-group">
+                    <label>Turno:</label>
+                    <input type="text" id="gTurno" placeholder="Ej: Noche">
+                </div>
+                <button class="btn-action" onclick="generarReporteGuardiaWhatsApp()">Enviar Parte a WhatsApp</button>
+            </div>
+        </div>
+
+        <!-- VISTA 3: PERFIL / YO -->
+        <div id="view-perfil" class="view">
+            <h2 class="section-title">Mi Perfil (Guardia)</h2>
+            
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">&#128104;&#8205;&#128187;</div>
+                    <div class="profile-info">
+                        <h3 id="perfilNombreVisual">Guardia del Puesto 2</h3>
+                        <p>Soles del Oeste</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre y Apellido:</label>
+                    <input type="text" id="perfilNombreInput" placeholder="Ej: Tob&iacute;as Biasucci" oninput="guardarDatosPerfil()">
+                </div>
+                <div class="form-group">
+                    <label>N&uacute;mero de Legajo / DNI:</label>
+                    <input type="text" id="perfilLegajo" placeholder="Ej: 42356789" oninput="guardarDatosPerfil()">
+                </div>
+            </div>
+
+            <div class="profile-card">
+                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno (PIN Aleatorio)</h3>
+                
+                <div class="form-group">
+                    <label>Estado Actual:</label>
+                    <input type="text" id="perfilEstadoTurno" value="Fuera de Turno" readonly style="font-weight: bold; color: #e84393;">
+                </div>
+
+                <button class="btn-action" style="margin-bottom: 10px;" onclick="gestionarTurnoClick()" id="btnFichaje">Iniciar Turno</button>
+
+                <!-- Panel de Relevo y PIN -->
+                <div id="panel-relevo-desplegable" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
+                    <div id="seccion-pin-ingreso" style="display: none;">
+                        <p style="font-size: 0.85rem; color: #d63031; margin-bottom: 8px;">&#9888;&#65039; Hay un turno anterior activo. Ingrese el c&oacute;digo PIN de 4 d&iacute;gitos provisto por el guardia saliente:</p>
+                        <div class="form-group">
+                            <label>C&oacute;digo PIN de Relevo (4 d&iacute;gitos):</label>
+                            <input type="text" id="inputPinRelevo" maxlength="4" placeholder="Ej: 4892">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Compa&ntilde;ero al que Relevas:</label>
+                        <input type="text" id="relevoCompanero" placeholder="Ej: Isa&iacute;as Ojeda">
+                    </div>
+                    <div class="form-group">
+                        <label>Turno:</label>
+                        <input type="text" id="relevoTurno" placeholder="Ej: Ma&ntilde;ana / Noche">
+                    </div>
+
+                    <button class="btn-action" style="margin-top: 10px; margin-bottom: 0; background-color: #00b894;" onclick="confirmarInicioTurno()">Confirmar e Iniciar Turno</button>
+                </div>
+            </div>
+
+            <!-- Calendario de Horas Trabajadas -->
+            <div class="profile-card">
+                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Historial de Horas (Calendario)</h3>
+                
+                <div class="calendar-header">
+                    <button class="icon-btn" onclick="cambiarMes(-1)" style="color: var(--text-color);">&#9664;</button>
+                    <h4 id="calendarMonthYearTitle" style="font-size: 0.95rem;">Enero 2026</h4>
+                    <button class="icon-btn" onclick="cambiarMes(1)" style="color: var(--text-color);">&#9654;</button>
+                </div>
+
+                <div class="calendar-grid" style="margin-bottom: 8px;">
+                    <div class="calendar-day-name">Lu</div>
+                    <div class="calendar-day-name">Ma</div>
+                    <div class="calendar-day-name">Mi</div>
+                    <div class="calendar-day-name">Ju</div>
+                    <div class="calendar-day-name">Vi</div>
+                    <div class="calendar-day-name">S&aacute;</div>
+                    <div class="calendar-day-name">Do</div>
+                </div>
+
+                <div id="calendarGridDays" class="calendar-grid">
+                    <!-- Los días se generan con JavaScript -->
+                </div>
+
+                <div style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; text-align: right;">
+                    Total mes: <span id="totalHorasMes" style="color: var(--header-bg);">0 hs</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Barra de Navegación Inferior -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" id="nav-btn-categorias" onclick="switchTab('categorias')">
+            <span class="icon">&#127968;</span>
+            <span>Men&uacute;</span>
+        </button>
+        <button class="nav-item" id="nav-btn-reportes" onclick="switchTab('reportes')">
+            <span class="icon">&#128680;</span>
+            <span>Reportes</span>
+        </button>
+        <button class="nav-item" id="nav-btn-herramientas" onclick="switchTab('herramientas')">
+            <span class="icon">&#128736;&#65039;</span>
+            <span>Herramientas</span>
+        </button>
+        <button class="nav-item" id="nav-btn-perfil" onclick="switchTab('perfil')">
+            <span class="icon">&#128100;</span>
+            <span>Yo</span>
+        </button>
+    </nav>
+
+    <script>
+        // Variables globales para el calendario y control de turnos
+        let fechaActualCalendario = new Date();
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + tabId).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const navBtn = document.getElementById('nav-btn-' + tabId);
+            if (navBtn) navBtn.classList.add('active');
+
+            const backIcon = document.getElementById('back-icon');
+            if (tabId === 'categorias') {
+                backIcon.style.display = 'none';
+            } else {
+                backIcon.style.display = 'inline';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function goHome() {
+            switchTab('categorias');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeBtn = document.getElementById('theme-btn');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+                themeBtn.innerHTML = '&#9728;&#65039;';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                themeBtn.innerHTML = '&#127769;';
+            }
+        }
+
+        function toggleSeccionPersonas() {
+            const val = document.getElementById('repPersonaCheck').value;
+            document.getElementById('seccion-datos-persona').style.display = (val === 'si') ? 'block' : 'none';
+        }
+
+        function openRondinForm() {
+            document.getElementById('tools-menu').style.display = 'none';
+            document.getElementById('form-rondin').style.display = 'block';
+            document.getElementById('back-icon').style.display = 'inline';
+        }
+
+        function openGuardiaForm() {
+            document.getElementById('tools-menu').style.display = 'none';
+            document.getElementById('form-guardia').style.display = 'block';
+            document.getElementById('back-icon').style.display = 'inline';
+        }
+
+        // --- LÓGICA DE PERFIL, TURNO Y PIN DE RELEVO ---
+        function guardarDatosPerfil() {
+            const nombre = document.getElementById('perfilNombreInput').value;
+            const legajo = document.getElementById('perfilLegajo').value;
+            if (nombre) document.getElementById('perfilNombreVisual').innerText = nombre;
+            localStorage.setItem('puesto2_nombre', nombre);
+            localStorage.setItem('puesto2_legajo', legajo);
+        }
+
+        function gestionarTurnoClick() {
+            const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
+            const panel = document.getElementById('panel-relevo-desplegable');
+            const seccionPin = document.getElementById('seccion-pin-ingreso');
+            const btnFichaje = document.getElementById('btnFichaje');
+
+            if (turnoActivo === 'true') {
+                // Finalizar turno actual y generar PIN para el siguiente
+                if (confirm('¿Desea finalizar su turno actual?')) {
+                    finalizarTurnoActual();
+                }
+            } else {
+                // Intentar iniciar turno
+                panel.style.display = 'block';
+                const hayTurnoPrevio = localStorage.getItem('puesto2_turnoPendienteCierre');
+                if (hayTurnoPrevio === 'true') {
+                    seccionPin.style.display = 'block';
+                } else {
+                    seccionPin.style.display = 'none';
+                }
+            }
+        }
+
+        function confirmarInicioTurno() {
+            const seccionPin = document.getElementById('seccion-pin-ingreso');
+            const hayTurnoPrevio = localStorage.getItem('puesto2_turnoPendienteCierre');
+
+            if (hayTurnoPrevio === 'true' && seccionPin.style.display === 'block') {
+                const pinIngresado = document.getElementById('inputPinRelevo').value;
+                const pinGenerado = localStorage.getItem('puesto2_pinActual');
+                if (pinIngresado !== pinGenerado) {
+                    alert('Código PIN incorrecto o faltante provisto por el guardia saliente.');
+                    return;
+                }
+            }
+
+            // Iniciar nuevo turno
+            localStorage.setItem('puesto2_turnoActivo', 'true');
+            localStorage.setItem('puesto2_turnoPendienteCierre', 'true');
+            localStorage.setItem('puesto2_horaInicio', new Date().toISOString());
+
+            document.getElementById('perfilEstadoTurno').value = 'En Turno Activo';
+            document.getElementById('perfilEstadoTurno').style.color = '#00b894';
+            document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
+            document.getElementById('panel-relevo-desplegable').style.display = 'none';
+
+            alert('¡Turno iniciado con éxito!');
+        }
+
+        function finalizarTurnoActual() {
+            const horaInicioStr = localStorage.getItem('puesto2_horaInicio');
+            if (horaInicioStr) {
+                const inicio = new Date(horaInicioStr);
+                const fin = new Date();
+                const diffMs = fin - inicio;
+                const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
+
+                // Guardar en historial de horas por fecha (YYYY-MM-DD)
+                const fechaKey = fin.toISOString().split('T')[0];
+                let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
+                historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
+                localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
+            }
+
+            // Generar nuevo PIN aleatorio de 4 dígitos para el siguiente relevo
+            const nuevoPin = Math.floor(1000 + Math.random() * 9000).toString();
+            localStorage.setItem('puesto2_pinActual', nuevoPin);
+            localStorage.setItem('puesto2_turnoActivo', 'false');
+
+            document.getElementById('perfilEstadoTurno').value = 'Fuera de Turno';
+            document.getElementById('perfilEstadoTurno').style.color = '#e84393';
+            document.getElementById('btnFichaje').innerText = 'Iniciar Turno';
+
+            alert(`Turno finalizado. El código PIN generado de 4 dígitos para el relevo es: ${nuevoPin}`);
+            renderizarCalendario();
+        }
+
+        // --- CALENDARIO MENSUAL DE HORAS ---
+        function cambiarMes(dir) {
+            fechaActualCalendario.setMonth(fechaActualCalendario.getMonth() + dir);
+            renderizarCalendario();
+        }
+
+        function renderizarCalendario() {
+            const year = fechaActualCalendario.getFullYear();
+            const month = fechaActualCalendario.getMonth();
+            
+            const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            document.getElementById('calendarMonthYearTitle').innerText = `${mesesNombres[month]} ${year}`;
+
+            const primerDiaIndex = (new Date(year, month, 1).getDay() + 6) % 7; // Lunes como inicio
+            const totalDiasMes = new Date(year, month + 1, 0).getDate();
+
+            const grid = document.getElementById('calendarGridDays');
+            grid.innerHTML = '';
+
+            let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
+            let totalMes = 0;
+
+            // Días vacíos previos
+            for (let i = 0; i < primerDiaIndex; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                grid.appendChild(cell);
+            }
+
+            // Días del mes
+            for (let dia = 1; dia <= totalDiasMes; dia++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                
+                const mesStr = String(month + 1).padStart(2, '0');
+                const diaStr = String(dia).padStart(2, '0');
+                const fechaKey = `${year}-${mesStr}-${diaStr}`;
+
+                const horasDia = historial[fechaKey] || 0;
+                if (horasDia > 0) {
+                    cell.classList.add('has-hours');
+                    totalMes += horasDia;
+                }
+
+                cell.innerHTML = `<span style="font-weight:bold;">${dia}</span><span style="font-size:0.65rem; color:var(--header-bg);">${horasDia > 0 ? horasDia + 'h' : ''}</span>`;
+                grid.appendChild(cell);
+            }
+
+            document.getElementById('totalHorasMes').innerText = totalMes.toFixed(1) + ' hs';
+        }
+
+        // Inicialización al cargar la app
+        window.onload = function() {
+            const nombreGuarda = localStorage.getItem('puesto2_nombre');
+            const legajoGuarda = localStorage.getItem('puesto2_legajo');
+            if (nombreGuarda) {
+                document.getElementById('perfilNombreInput').value = nombreGuarda;
+                document.getElementById('perfilNombreVisual').innerText = nombreGuarda;
+            }
+            if (legajoGuarda) {
+                document.getElementById('perfilLegajo').value = legajoGuarda;
+            }
+
+            const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
+            if (turnoActivo === 'true') {
+                document.getElementById('perfilEstadoTurno').value = 'En Turno Activo';
+                document.getElementById('perfilEstadoTurno').style.color = '#00b894';
+                document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
+            }
+
+            renderizarCalendario();
+        };
+
+        function redactarConIAOffline() { alert("IA Local simulada: Redacción optimizada."); }
+        function redactarConIAOnline() { alert("IA Online simulada: Conexión establecida."); }
+        function mostrarVistaPreviaReporte() {
+            const m = document.getElementById('repManzana').value;
+            const l = document.getElementById('repLote').value;
+            const t = document.getElementById('repTipoIncidencia').value;
+            const d = document.getElementById('repDetalle').value;
+            document.getElementById('textoPreviewSalida').value = `REPORTE PUESTO 2\nMza: ${m} | Lote: ${l}\nTipo: ${t}\nDetalle: ${d}`;
+            document.getElementById('panel-vista-previa').style.display = 'block';
+        }
+        function enviarReporteWhatsAppDefinitivo() { alert("Redirigiendo a WhatsApp..."); }
+        function generarReporteRondinWhatsApp() { alert("Enviando rondín..."); }
+        function generarReporteGuardiaWhatsApp() { alert("Enviando parte..."); }
+        function toggleDetallesNovedadesGuardia() {
+            const val = document.getElementById('gSelectorNovedades').value;
+            document.getElementById('seccion-novedades-guardia').style.display = (val === 'si') ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
