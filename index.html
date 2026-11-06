@@ -805,7 +805,7 @@
             </div>
 
             <div class="profile-card">
-                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno</h3>
+                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno (PIN Aleatorio)</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra el inicio de tu jornada para enviar el aviso por WhatsApp y controlar las horas.</p>
                 
                 <div class="form-group">
@@ -817,6 +817,15 @@
 
                 <!-- Panel Desplegable para el Relevo -->
                 <div id="panel-relevo-desplegable" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
+                    <!-- Sección de PIN Obligatorio si hay turno previo -->
+                    <div id="seccion-pin-ingreso" style="display: none; background-color: rgba(214, 48, 49, 0.08); border: 1px solid #d63031; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                        <p style="font-size: 0.85rem; color: #d63031; font-weight: bold; margin-bottom: 5px;">⚠️ Hay un turno anterior activo.</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Ingrese el código PIN de 4 dígitos provisto por el guardia saliente:</p>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="text" id="inputPinRelevo" maxlength="4" placeholder="Ej: 4892" style="text-align: center; font-weight: bold; letter-spacing: 2px;">
+                        </div>
+                    </div>
+
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Datos del Relevo para WhatsApp:</h4>
                     
                     <div class="form-group">
@@ -829,7 +838,7 @@
                         <input type="text" id="relevoTurno" placeholder="Ej: Tarde">
                     </div>
 
-                    <button class="btn-action" style="margin-top: 10px; margin-bottom: 0; background-color: #00b894;" onclick="confirmarInicioTurno()">Confirmar e Enviar Aviso</button>
+                    <button class="btn-action" style="margin-top: 10px; margin-bottom: 0; background-color: #00b894;" onclick="confirmarInicioTurno()">Confirmar e Iniciar Turno</button>
                 </div>
             </div>
 
@@ -970,13 +979,11 @@
                 document.getElementById('perfilLegajo').value = guardLegajo;
             }
 
-            const turnoInicio = localStorage.getItem('bs_turno_inicio');
-            if (turnoInicio) {
-                enTurno = true;
-                iniciarContadorVisual(parseInt(turnoInicio, 10));
-                const btnFichaje = document.getElementById('btnFichaje');
-                btnFichaje.textContent = "Finalizar Turno";
-                btnFichaje.style.backgroundColor = "#d63031";
+            const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
+            if (turnoActivo === 'true') {
+                document.getElementById('perfilEstadoTurno').value = 'En Turno Activo';
+                document.getElementById('perfilEstadoTurno').style.color = '#00b894';
+                document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
             }
 
             renderizarCalendario();
@@ -1013,42 +1020,54 @@
             }
         }
 
+        // --- GESTIÓN DE TURNO Y PIN DE RELEVO OBLIGATORIO ---
         function gestionarTurnoClick() {
+            const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
+            const panel = document.getElementById('panel-relevo-desplegable');
+            const seccionPin = document.getElementById('seccion-pin-ingreso');
             const btnFichaje = document.getElementById('btnFichaje');
-            const panelRelevo = document.getElementById('panel-relevo-desplegable');
 
-            if (!enTurno) {
-                if (panelRelevo.style.display === 'none') {
-                    panelRelevo.style.display = 'block';
-                    btnFichaje.textContent = "Cancelar";
-                } else {
-                    panelRelevo.style.display = 'none';
-                    btnFichaje.textContent = "Iniciar Turno";
+            if (turnoActivo === 'true') {
+                if (confirm('¿Desea finalizar su turno actual y generar el PIN de relevo para su compañero?')) {
+                    // Generar código PIN aleatorio de 4 dígitos
+                    const nuevoPin = Math.floor(1000 + Math.random() * 9000).toString();
+                    localStorage.setItem('puesto2_pinActual', nuevoPin);
+
+                    // Registrar horas trabajadas
+                    const horaInicioStr = localStorage.getItem('puesto2_horaInicio');
+                    if (horaInicioStr) {
+                        const inicio = new Date(horaInicioStr);
+                        const fin = new Date();
+                        const diffMs = fin - inicio;
+                        const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
+                        const fechaKey = fin.toISOString().split('T')[0];
+                        let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
+                        historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
+                        localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
+                    }
+
+                    // Cambiar estado a inactivo pero manteniendo la bandera de turno pendiente de relevo con PIN
+                    localStorage.removeItem('bs_turno_inicio');
+                    localStorage.setItem('puesto2_turnoActivo', 'false');
+
+                    document.getElementById('perfilEstadoTurno').value = 'Fuera de Turno';
+                    document.getElementById('perfilEstadoTurno').style.color = '#e84393';
+                    btnFichaje.innerText = 'Iniciar Turno';
+
+                    alert(`🔒 Turno finalizado con éxito.\n\nEl código PIN de relevo de 4 dígitos generado para tu compañero es:\n\n👉 [ ${nuevoPin} ] 👈\n\nDictale este número al guardia entrante.`);
+                    renderizarCalendario();
                 }
             } else {
-                enTurno = false;
-                const horaInicioStr = localStorage.getItem('bs_turno_inicio');
-                if (horaInicioStr) {
-                    const inicio = new Date(parseInt(horaInicioStr, 10));
-                    const fin = new Date();
-                    const diffMs = fin - inicio;
-                    const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
-                    const fechaKey = fin.toISOString().split('T')[0];
-                    let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
-                    historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
-                    localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
+                panel.style.display = 'block';
+                btnFichaje.textContent = "Cancelar";
+
+                // Verificar si hay un PIN activo esperando relevo
+                const pinEsperado = localStorage.getItem('puesto2_pinActual');
+                if (pinEsperado) {
+                    seccionPin.style.display = 'block';
+                } else {
+                    seccionPin.style.display = 'none';
                 }
-
-                localStorage.removeItem('bs_turno_inicio');
-                clearInterval(timerInterval);
-
-                const estadoInput = document.getElementById('perfilEstadoTurno');
-                estadoInput.value = "Fuera de Turno";
-                estadoInput.style.color = "#e84393";
-                btnFichaje.textContent = "Iniciar Turno";
-                btnFichaje.style.backgroundColor = "#0084d1";
-                panelRelevo.style.display = 'none';
-                renderizarCalendario();
             }
         }
 
@@ -1059,18 +1078,32 @@
                 return;
             }
 
+            // Validar PIN si hay un turno previo pendiente de relevo
+            const pinEsperado = localStorage.getItem('puesto2_pinActual');
+            const seccionPin = document.getElementById('seccion-pin-ingreso');
+            if (pinEsperado && seccionPin.style.display === 'block') {
+                const pinIngresado = document.getElementById('inputPinRelevo').value.trim();
+                if (pinIngresado !== pinEsperado) {
+                    alert("❌ Código PIN incorrecto. Debes solicitar el PIN de 4 dígitos al guardia saliente para poder iniciar tu turno.");
+                    return;
+                }
+                // Limpiar el PIN una vez validado correctamente
+                localStorage.removeItem('puesto2_pinActual');
+            }
+
             const companero = document.getElementById('relevoCompanero').value.trim();
             const turno = document.getElementById('relevoTurno').value.trim();
 
             if (!companero || !turno) {
-                alert("Debes indicar el compañero y el turno.");
+                alert("Debes indicar el compañero al que relevas y el turno.");
                 return;
             }
 
             enTurno = true;
             const ahoraMs = Date.now();
             localStorage.setItem('bs_turno_inicio', ahoraMs);
-            iniciarContadorVisual(ahoraMs);
+            localStorage.setItem('puesto2_horaInicio', new Date().toISOString());
+            localStorage.setItem('puesto2_turnoActivo', 'true');
 
             const btnFichaje = document.getElementById('btnFichaje');
             btnFichaje.textContent = "Finalizar Turno";
@@ -1095,30 +1128,6 @@
 
             const urlWhatsApp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(mensaje);
             window.open(urlWhatsApp, '_blank');
-        }
-
-        function iniciarContadorVisual(tiempoInicioMs) {
-            const estadoInput = document.getElementById('perfilEstadoTurno');
-            actualizarTiempo(tiempoInicioMs, estadoInput);
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                actualizarTiempo(tiempoInicioMs, estadoInput);
-            }, 1000);
-        }
-
-        function actualizarTiempo(tiempoInicioMs, elementoInput) {
-            const ahoraMs = Date.now();
-            const diferenciaSegundos = Math.floor((ahoraMs - tiempoInicioMs) / 1000);
-            const horas = Math.floor(diferenciaSegundos / 3600);
-            const minutos = Math.floor((diferenciaSegundos % 3600) / 60);
-            const segundos = diferenciaSegundos % 60;
-
-            const dInicio = new Date(tiempoInicioMs);
-            const hInicio = String(dInicio.getHours()).padStart(2, '0');
-            const mInicio = String(dInicio.getMinutes()).padStart(2, '0');
-            
-            elementoInput.value = `En Turno (${hInicio}:${mInicio}) - ${horas}h ${minutos}m ${segundos}s`;
-            elementoInput.style.color = "#00b894";
         }
 
         function cambiarMes(dir) {
@@ -1257,7 +1266,6 @@
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensajeFinal), '_blank');
         }
 
-        // --- FORMATO EXACTO DE RONDÍN (Basado en el mensaje de Franco) ---
         function generarReporteRondinWhatsApp() {
             const tipoRegistro = document.getElementById('rondinTipoRegistro').value;
             const horaIngresoInput = document.getElementById('rondinHoraIngreso').value.trim();
@@ -1311,7 +1319,6 @@
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(textoMensaje), '_blank');
         }
 
-        // --- FORMATO EXACTO DE PARTE DEL PORTERO (Basado en el mensaje de Isaias Ojeda) ---
         function generarReporteGuardiaWhatsApp() {
             const guardia = document.getElementById('gGuardia').value.trim() || "Tobías biasucci";
             const turno = document.getElementById('gTurno').value.trim() || "Mañana";
@@ -1331,8 +1338,6 @@
             let observacion, motoLlave, motoAceite, motoBaliza, motoCasco, motoEstado;
             let linternaCant, estadoLinternas, handyCant, estadoHandys;
             let cabinaLimpieza, caloventor, monitores, pavaElectrica, baterias, responsable;
-
-            const claveStorage = 'bs_parte_' + guardia.toLowerCase().replace(/\s+/g, '_');
 
             if (selectorNov === 'no') {
                 observacion = "En orden y funcionando";
