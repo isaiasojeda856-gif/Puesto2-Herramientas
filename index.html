@@ -42,7 +42,7 @@
             overscroll-behavior-y: none;
         }
 
-        body {
+        html, body {
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -84,7 +84,8 @@
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            align-items: center;
         }
 
         .icon-btn {
@@ -93,7 +94,7 @@
             color: var(--header-text);
             font-size: 1.1rem;
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 4px;
         }
 
@@ -101,13 +102,12 @@
             background-color: rgba(255,255,255,0.2);
         }
 
-        /* Contenedor de Vistas */
+        /* Contenedor de Vistas con Scroll Fluido */
         .main-content {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
         }
 
         .view {
@@ -257,10 +257,6 @@
             flex: 1;
         }
 
-        .btn-ai-offline:active, .btn-ai-online:active {
-            opacity: 0.8;
-        }
-
         /* Tarjeta de Perfil */
         .profile-card {
             background-color: var(--card-bg);
@@ -289,6 +285,45 @@
             justify-content: center;
             font-size: 1.5rem;
             font-weight: bold;
+        }
+
+        /* Estilos del Calendario de Horas */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .calendar-day-name {
+            font-weight: bold;
+            color: var(--text-muted);
+            padding-bottom: 5px;
+        }
+
+        .calendar-cell {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 2px;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-cell.has-hours {
+            background-color: rgba(74, 144, 226, 0.15);
+            border-color: var(--header-bg);
         }
 
         /* Barra de Navegación Inferior */
@@ -342,13 +377,15 @@
             <h1 id="app-title">B.S. Sentir - Puesto 2</h1>
         </div>
         <div class="header-actions">
+            <!-- Botón manual para buscar actualizaciones y limpiar caché -->
+            <button class="icon-btn" onclick="forzarActualizacionApp()" title="Buscar actualizaciones">&#8635;</button>
             <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Cambiar Tema">&#127769;</button>
         </div>
     </header>
 
     <!-- Contenido Principal -->
-    <div class="main-content">
-       
+    <div class="main-content" id="mainContent">
+        
         <!-- VISTA 1: MENÚ PRINCIPAL -->
         <div id="view-categorias" class="view active">
             <div class="menu-card" onclick="switchTab('reportes')">
@@ -379,7 +416,7 @@
         <!-- VISTA: GENERADOR DE REPORTES -->
         <div id="view-reportes" class="view">
             <h2 class="section-title">INFORME DE NOVEDAD</h2>
-           
+            
             <div class="row-inputs">
                 <div class="form-group">
                     <label>Manzana</label>
@@ -399,7 +436,7 @@
             <div class="form-group">
                 <label>Detalle o Nota R&aacute;pida (Escribe tus notas informales...)</label>
                 <textarea id="repDetalle" rows="3" placeholder="Ej: perro suelto mordiendo tachos, asustando vecinos..."></textarea>
-               
+                
                 <div class="ai-buttons-container">
                     <button type="button" class="btn-ai-offline" onclick="redactarConIAOffline()">
                         <span>&#9889;</span> IA Local (Sin Internet)
@@ -452,7 +489,7 @@
             <!-- Panel Desplegable de Vista Previa -->
             <div id="panel-vista-previa" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 30px;">
                 <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--header-bg);">&#128065;&#65039; Vista Previa del Mensaje (Listo para WhatsApp):</h3>
-               
+                
                 <div class="form-group">
                     <textarea id="textoPreviewSalida" rows="6" readonly style="font-family: monospace; font-size: 0.85rem; background-color: var(--card-bg);"></textarea>
                 </div>
@@ -467,7 +504,7 @@
         <div id="view-herramientas" class="view">
             <div id="tools-menu">
                 <h2 class="section-title">Herramientas Operativas</h2>
-               
+                
                 <div class="menu-card" onclick="openRondinForm()">
                     <div class="menu-icon icon-tools">&#128692;</div>
                     <div class="menu-info">
@@ -488,7 +525,7 @@
             <!-- Formulario del Rondín -->
             <div id="form-rondin" style="display: none;">
                 <h2 class="section-title">Control de Rond&iacute;n (Soles del Oeste)</h2>
-               
+                
                 <div class="form-group">
                     <label>Tipo de Reporte:</label>
                     <select id="rondinTipoRegistro">
@@ -504,76 +541,76 @@
 
                 <div class="form-group">
                     <label>Rond&iacute;n (Personal):</label>
-                    <input type="text" id="rondinNombre" placeholder="Ej: Esteban">
+                    <input type="text" id="rondinNombre" placeholder="Ej: Franco Gonzalez">
                 </div>
 
                 <div class="form-group">
                     <label>Clima:</label>
-                    <input type="text" id="rondinClima" placeholder="Ej: Fr&iacute;o">
+                    <input type="text" id="rondinClima" placeholder="Ej: Soleado">
                 </div>
 
                 <div class="sub-section-title">&#10024; CONTROL DE LA MOTO:</div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; Llave:</label>
-                    <input type="text" id="rondinLlave" placeholder="Ej: si">
+                    <input type="text" id="rondinLlave" value="Si">
                 </div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; Nivel de aceite:</label>
-                    <input type="text" id="rondinAceite" placeholder="Ej: medio">
+                    <input type="text" id="rondinAceite" value="Completo">
                 </div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; Nivel de Combustible de la moto:</label>
-                    <input type="text" id="rondinCombustibleMoto" placeholder="Ej: lleno">
+                    <input type="text" id="rondinCombustibleMoto" value="Completo">
                 </div>
 
                 <div class="form-group">
                     <label>Bid&oacute;n:</label>
-                    <input type="text" id="rondinBidon" placeholder="Ej: 5 Ls">
+                    <input type="text" id="rondinBidon" value="Medio">
                 </div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; BALIZA AZUL:</label>
-                    <input type="text" id="rondinBaliza" placeholder="Ej: si">
+                    <input type="text" id="rondinBaliza" value="Si">
                 </div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; Casco:</label>
-                    <input type="text" id="rondinCasco" placeholder="si">
+                    <input type="text" id="rondinCasco" value="Si">
                 </div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; Estado General:</label>
-                    <input type="text" id="rondinEstadoGeneral" placeholder="sin novedades">
+                    <input type="text" id="rondinEstadoGeneral" value="Sin novedades">
                 </div>
 
                 <div class="sub-section-title">&#10024; CONTROL DE ELEMENTOS DE TRABAJO:</div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; Linterna (Estado):</label>
-                    <input type="text" id="rondinLinterna" placeholder="Ej: en funcionamiento">
+                    <input type="text" id="rondinLinterna" value="En funcionamiento">
                 </div>
 
                 <div class="form-group">
                     <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Bater&iacute;a Linterna:</label>
-                    <input type="text" id="rondinBateriaLinterna" placeholder="Ej: media carga">
+                    <input type="text" id="rondinBateriaLinterna" value="Completa">
                 </div>
 
                 <div class="form-group">
                     <label>&#128378;&#65039; Handy (Estado):</label>
-                    <input type="text" id="rondinHandy" placeholder="Ej: falla">
+                    <input type="text" id="rondinHandy" value="En funcionamiento">
                 </div>
 
                 <div class="form-group">
                     <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Bater&iacute;a Handy:</label>
-                    <input type="text" id="rondinBateriaHandy" placeholder="Ej: 50%">
+                    <input type="text" id="rondinBateriaHandy" value="Completa">
                 </div>
 
                 <div class="form-group">
                     <label>Novedades / Observaciones:</label>
-                    <textarea id="rondinNovedades" rows="3" placeholder="hay novedades"></textarea>
+                    <textarea id="rondinNovedades" rows="3">Sin novedades</textarea>
                 </div>
 
                 <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rond&iacute;n a WhatsApp</button>
@@ -582,93 +619,92 @@
             <!-- Formulario del Parte del Guardia Optimizado con Aviso de Perfil -->
             <div id="form-guardia" style="display: none;">
                 <h2 class="section-title">Parte del Portero (Guardias)</h2>
-               
-                <!-- CARTEL INFORMATIVO / AVISO PARA EL GUARDIA -->
+                
                 <div style="background-color: rgba(74, 144, 226, 0.12); border: 1px solid var(--header-bg); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
                     <p style="font-size: 0.85rem; color: var(--text-color); line-height: 1.4;">
-                        &#8505;&#65039; <b>Aviso de Memoria por Perfil:</b> El sistema recuerda el &uacute;ltimo parte personalizado que guardaste bajo tu nombre de perfil actual. Si seleccionas <i>"No"</i> en novedades, se enviar&aacute; tu &uacute;ltima configuraci&oacute;n guardada de equipos actualizando exclusivamente los accesos del d&iacute;a.
+                        &#8505;&#65039; <b>Aviso de Memoria por Perfil:</b> El sistema recuerda el último parte personalizado que guardaste bajo tu nombre de perfil actual. Si seleccionas <i>"No"</i> en novedades, se enviará tu última configuración guardada de equipos actualizando exclusivamente los accesos del día.
                     </p>
                 </div>
 
                 <div class="form-group">
                     <label>Nombre del Guardia:</label>
-                    <input type="text" id="gGuardia" placeholder="Ej: Tobias Biasucci">
+                    <input type="text" id="gGuardia" placeholder="Ej: Tobías biasucci">
                 </div>
 
                 <div class="form-group">
                     <label>Turno de Trabajo:</label>
-                    <input type="text" id="gTurno" placeholder="Ej: Noche">
+                    <input type="text" id="gTurno" placeholder="Ej: Mañana">
                 </div>
 
                 <div class="sub-section-title">FLUJO DE ACCESOS</div>
 
                 <div class="form-group">
                     <label>&#11093; Ingreso de personas:</label>
-                    <input type="text" id="gIngresoPers" placeholder="0">
+                    <input type="text" id="gIngresoPers" placeholder="4">
                 </div>
 
                 <div class="form-group">
                     <label>&#11093; Salida de Personas:</label>
-                    <input type="text" id="gSalidaPers" placeholder="0">
+                    <input type="text" id="gSalidaPers" placeholder="7">
                 </div>
 
                 <div class="form-group">
                     <label>&#11093; Ingreso de veh&iacute;culos:</label>
-                    <input type="text" id="gIngresoVeh" placeholder="0">
+                    <input type="text" id="gIngresoVeh" placeholder="101">
                 </div>
 
                 <div class="form-group">
                     <label>&#11093; Salida de veh&iacute;culos:</label>
-                    <input type="text" id="gSalidaVeh" placeholder="0">
+                    <input type="text" id="gSalidaVeh" placeholder="128">
                 </div>
 
                 <div class="sub-section-title">COMBUSTIBLE Y BATER&Iacute;AS</div>
 
                 <div class="form-group">
-                    <label>&#9981;&#65039; Nivel de Combustible (Moto):</label>
-                    <input type="text" id="gMotoCombustible" placeholder="Ej: Completo / 1/2">
+                    <label>Nivel de Combustible (Moto):</label>
+                    <input type="text" id="gMotoCombustible" value="Completo">
                 </div>
 
                 <div class="form-group">
-                    <label>&#128739;&#65039; Nivel de Combustible (Bid&oacute;n):</label>
-                    <input type="text" id="gMotoBidon" placeholder="Ej: 2.5 lts">
+                    <label>Nivel de Combustible (Bid&oacute;n):</label>
+                    <input type="text" id="gMotoBidon" value="2,5 lts">
                 </div>
 
                 <div class="form-group">
-                    <label>&#128267; Bater&iacute;a Linterna Puesto (Guardia):</label>
-                    <input type="text" id="gLinterna1" placeholder="Ej: Carga Completa">
+                    <label>Bater&iacute;a Linterna Puesto (Guardia):</label>
+                    <input type="text" id="gLinterna1" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>&#128267; Bater&iacute;a Linterna Rond&iacute;n:</label>
-                    <input type="text" id="gLinterna2" placeholder="Ej: Carga Completa">
+                    <label>Bater&iacute;a Linterna Rond&iacute;n:</label>
+                    <input type="text" id="gLinterna2" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>&#128267; Bater&iacute;a Handy Puesto (Guardia):</label>
-                    <input type="text" id="gHandy1" placeholder="Ej: Media Carga">
+                    <label>Bater&iacute;a Handy Puesto (Guardia):</label>
+                    <input type="text" id="gHandy1" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>&#128267; Bater&iacute;a Handy Rond&iacute;n:</label>
-                    <input type="text" id="gHandy2" placeholder="Ej: Carga Completa">
+                    <label>Bater&iacute;a Handy Rond&iacute;n:</label>
+                    <input type="text" id="gHandy2" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>&#9888;&#65039; &iquest;Hay novedades o anomal&iacute;as en instalaciones/equipos?</label>
+                    <label>&iquest;Hay novedades o anomal&iacute;as en instalaciones/equipos?</label>
                     <select id="gSelectorNovedades" onchange="toggleDetallesNovedadesGuardia()">
-                        <option value="no">No (Mantener mi &uacute;ltima configuraci&oacute;n / Est&aacute;ndar)</option>
-                        <option value="si">S&iacute; (Modificar detalles y equipos)</option>
+                        <option value="no">No (Mantener mi última configuración / Estándar)</option>
+                        <option value="si">Sí (Modificar detalles y equipos)</option>
                     </select>
                 </div>
 
                 <!-- Sección Oculta de Novedades Detalladas -->
                 <div id="seccion-novedades-guardia" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Detalle Extra de Equipos e Instalaciones:</h4>
-                   
+                    
                     <div class="form-group">
-                        <label>Observaci&oacute;n General / Novedades:</label>
-                        <textarea id="gObservacion" rows="2" placeholder="Ej: Novedad espec&iacute;fica..."></textarea>
+                        <label>Observaci&oacute;n General:</label>
+                        <textarea id="gObservacion" rows="2">En orden y funcionando</textarea>
                     </div>
 
                     <div class="form-group">
@@ -726,13 +762,13 @@
 
                     <div class="form-group">
                         <label>Bater&iacute;as:</label>
-                        <input type="text" id="gBaterias" value="2 colocadas - sin conexi&oacute;n">
+                        <input type="text" id="gBaterias" value="2 colocadas - sin conexión">
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label>Portero Entrante y Responsable:</label>
-                    <input type="text" id="gResponsable" placeholder="Ej: Isa&iacute;as Ojeda">
+                    <input type="text" id="gResponsable" placeholder="Ej: Tobías biasucci">
                 </div>
 
                 <button class="btn-action" onclick="generarReporteGuardiaWhatsApp()">Enviar Parte a WhatsApp</button>
@@ -742,7 +778,7 @@
         <!-- VISTA 3: PERFIL / YO -->
         <div id="view-perfil" class="view">
             <h2 class="section-title">Mi Perfil (Guardia)</h2>
-           
+            
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="profile-avatar">&#128104;&#8205;&#128187;</div>
@@ -754,7 +790,7 @@
 
                 <div class="form-group">
                     <label>Nombre y Apellido (Guardia):</label>
-                    <input type="text" id="perfilNombreInput" placeholder="Ej: Tob&iacute;as Biasucci" oninput="guardarDatosPerfil()">
+                    <input type="text" id="perfilNombreInput" placeholder="Ej: Isaias Ojeda" oninput="guardarDatosPerfil()">
                 </div>
 
                 <div class="form-group">
@@ -770,8 +806,8 @@
 
             <div class="profile-card">
                 <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra el inicio de tu jornada. Se abrir&aacute; un panel r&aacute;pido para indicar a qui&eacute;n relevas.</p>
-               
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra el inicio de tu jornada para enviar el aviso por WhatsApp y controlar las horas.</p>
+                
                 <div class="form-group">
                     <label>Estado Actual:</label>
                     <input type="text" id="perfilEstadoTurno" value="Fuera de Turno" readonly style="font-weight: bold; color: #e84393;">
@@ -782,18 +818,47 @@
                 <!-- Panel Desplegable para el Relevo -->
                 <div id="panel-relevo-desplegable" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Datos del Relevo para WhatsApp:</h4>
-                   
+                    
                     <div class="form-group">
                         <label>Compa&ntilde;ero al que Relevas:</label>
-                        <input type="text" id="relevoCompanero" placeholder="Ej: Isa&iacute;as Ojeda">
+                        <input type="text" id="relevoCompanero" placeholder="Ej: Tobias biasucci">
                     </div>
 
                     <div class="form-group">
                         <label>Turno:</label>
-                        <input type="text" id="relevoTurno" placeholder="Ej: Ma&ntilde;ana / Noche">
+                        <input type="text" id="relevoTurno" placeholder="Ej: Tarde">
                     </div>
 
                     <button class="btn-action" style="margin-top: 10px; margin-bottom: 0; background-color: #00b894;" onclick="confirmarInicioTurno()">Confirmar e Enviar Aviso</button>
+                </div>
+            </div>
+
+            <!-- Calendario de Horas Trabajadas -->
+            <div class="profile-card">
+                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Historial de Horas (Calendario)</h3>
+                
+                <div class="calendar-header">
+                    <button class="icon-btn" onclick="cambiarMes(-1)" style="color: var(--text-color);">&#9664;</button>
+                    <h4 id="calendarMonthYearTitle" style="font-size: 0.95rem;">Enero 2026</h4>
+                    <button class="icon-btn" onclick="cambiarMes(1)" style="color: var(--text-color);">&#9654;</button>
+                </div>
+
+                <div class="calendar-grid" style="margin-bottom: 8px;">
+                    <div class="calendar-day-name">Lu</div>
+                    <div class="calendar-day-name">Ma</div>
+                    <div class="calendar-day-name">Mi</div>
+                    <div class="calendar-day-name">Ju</div>
+                    <div class="calendar-day-name">Vi</div>
+                    <div class="calendar-day-name">S&aacute;</div>
+                    <div class="calendar-day-name">Do</div>
+                </div>
+
+                <div id="calendarGridDays" class="calendar-grid">
+                    <!-- Días generados por JS -->
+                </div>
+
+                <div style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; text-align: right;">
+                    Total mes: <span id="totalHorasMes" style="color: var(--header-bg);">0 hs</span>
                 </div>
             </div>
         </div>
@@ -807,12 +872,8 @@
             <span>Men&uacute;</span>
         </button>
         <button class="nav-item" id="nav-btn-herramientas" onclick="switchTab('herramientas')">
-            <span class="icon">&#128736;&#65039;</span>
+            <span class="icon">&#128736;</span>
             <span>Herramientas</span>
-        </button>
-        <button class="nav-item" id="nav-btn-reportes" onclick="switchTab('reportes')">
-            <span class="icon">&#128680;</span>
-            <span>Reportes</span>
         </button>
         <button class="nav-item" id="nav-btn-perfil" onclick="switchTab('perfil')">
             <span class="icon">&#128100;</span>
@@ -821,37 +882,53 @@
     </nav>
 
     <script>
-        function switchTab(tabId) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + tabId).classList.add('active');
+        const VERSION_ACTUAL = "1.0.0";
 
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const navBtn = document.getElementById('nav-btn-' + tabId);
-            if (navBtn) navBtn.classList.add('active');
-
-            const backIcon = document.getElementById('back-icon');
-            if (tabId === 'categorias') {
-                backIcon.style.display = 'none';
-            } else {
-                backIcon.style.display = 'inline';
+        async function forzarActualizacionApp() {
+            try {
+                const response = await fetch('version.json?t=' + new Date().getTime());
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.version && data.version !== VERSION_ACTUAL) {
+                        alert(`¡Nueva versión ${data.version} detectada! Actualizando...`);
+                    } else {
+                        alert(`La aplicación está actualizada (${VERSION_ACTUAL}).`);
+                    }
+                }
+            } catch (error) {
+                console.log("Comprobación offline.");
             }
-            window.scrollTo(0, 0);
+
+            if (window.caches) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+            window.location.reload(true);
         }
 
-        function goHome() {
-            switchTab('categorias');
+        let fechaActualCalendario = new Date();
+        let timerInterval = null;
+        let enTurno = false;
+
+        function redactarConIAOffline() {
+            const inputDetalle = document.getElementById('repDetalle');
+            const textoCrudo = inputDetalle.value.trim();
+            if (!textoCrudo) {
+                alert("Escribe palabras clave primero (ej: 'perro suelto').");
+                return;
+            }
+            let textoFormateado = "Se constata y registra situación en el sector: " + textoCrudo + ". Personal de guardia procede a realizar control preventivo.";
+            inputDetalle.value = textoFormateado;
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            const themeBtn = document.getElementById('theme-btn');
-            if (body.getAttribute('data-theme') === 'light') {
-                body.setAttribute('data-theme', 'dark');
-                themeBtn.innerHTML = '&#9728;&#65039;';
-            } else {
-                body.setAttribute('data-theme', 'light');
-                themeBtn.innerHTML = '&#127769;';
+        function redactarConIAOnline() {
+            const inputDetalle = document.getElementById('repDetalle');
+            if (!inputDetalle.value.trim()) {
+                alert("Escribe algo en el detalle primero.");
+                return;
             }
+            inputDetalle.value = "Informe de situación formal: " + inputDetalle.value.trim();
         }
 
         function toggleSeccionPersonas() {
@@ -859,86 +936,469 @@
             document.getElementById('seccion-datos-persona').style.display = (val === 'si') ? 'block' : 'none';
         }
 
+        function toggleDetallesNovedadesGuardia() {
+            const val = document.getElementById('gSelectorNovedades').value;
+            document.getElementById('seccion-novedades-guardia').style.display = (val === 'si') ? 'block' : 'none';
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('bs_sentir_theme', newTheme);
+            document.getElementById('theme-btn').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('bs_sentir_theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-btn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+            const guardName = localStorage.getItem('bs_guard_name');
+            const guardLegajo = localStorage.getItem('bs_guard_legajo');
+
+            if (guardName) {
+                document.getElementById('perfilNombreInput').value = guardName;
+                document.getElementById('perfilNombreVisual').textContent = guardName;
+                const inputGuardiaParte = document.getElementById('gGuardia');
+                if(inputGuardiaParte && !inputGuardiaParte.value) inputGuardiaParte.value = guardName;
+                cargarPartePorGuardia(guardName);
+            }
+
+            if (guardLegajo) {
+                document.getElementById('perfilLegajo').value = guardLegajo;
+            }
+
+            const turnoInicio = localStorage.getItem('bs_turno_inicio');
+            if (turnoInicio) {
+                enTurno = true;
+                iniciarContadorVisual(parseInt(turnoInicio, 10));
+                const btnFichaje = document.getElementById('btnFichaje');
+                btnFichaje.textContent = "Finalizar Turno";
+                btnFichaje.style.backgroundColor = "#d63031";
+            }
+
+            renderizarCalendario();
+        });
+
+        function guardarDatosPerfil() {
+            const name = document.getElementById('perfilNombreInput').value.trim();
+            const legajo = document.getElementById('perfilLegajo').value.trim();
+            document.getElementById('perfilNombreVisual').textContent = name || "Guardia del Puesto 2";
+            localStorage.setItem('bs_guard_name', name);
+            localStorage.setItem('bs_guard_legajo', legajo);
+
+            const inputGuardiaParte = document.getElementById('gGuardia');
+            if(inputGuardiaParte) {
+                inputGuardiaParte.value = name;
+                cargarPartePorGuardia(name);
+            }
+        }
+
+        function cargarPartePorGuardia(nombreGuardia) {
+            if (!nombreGuardia) return;
+            const claveStorage = 'bs_parte_' + nombreGuardia.toLowerCase().replace(/\s+/g, '_');
+            const datosGuardados = localStorage.getItem(claveStorage);
+            if (datosGuardados) {
+                try {
+                    const datos = JSON.parse(datosGuardados);
+                    if(document.getElementById('gMotoCombustible')) document.getElementById('gMotoCombustible').value = datos.combustibleMoto || 'Completo';
+                    if(document.getElementById('gMotoBidon')) document.getElementById('gMotoBidon').value = datos.bidon || '2,5 lts';
+                    if(document.getElementById('gLinterna1')) document.getElementById('gLinterna1').value = datos.linterna1 || 'Completa';
+                    if(document.getElementById('gLinterna2')) document.getElementById('gLinterna2').value = datos.linterna2 || 'Completa';
+                    if(document.getElementById('gHandy1')) document.getElementById('gHandy1').value = datos.handy1 || 'Completa';
+                    if(document.getElementById('gHandy2')) document.getElementById('gHandy2').value = datos.handy2 || 'Completa';
+                } catch(e) {}
+            }
+        }
+
+        function gestionarTurnoClick() {
+            const btnFichaje = document.getElementById('btnFichaje');
+            const panelRelevo = document.getElementById('panel-relevo-desplegable');
+
+            if (!enTurno) {
+                if (panelRelevo.style.display === 'none') {
+                    panelRelevo.style.display = 'block';
+                    btnFichaje.textContent = "Cancelar";
+                } else {
+                    panelRelevo.style.display = 'none';
+                    btnFichaje.textContent = "Iniciar Turno";
+                }
+            } else {
+                enTurno = false;
+                const horaInicioStr = localStorage.getItem('bs_turno_inicio');
+                if (horaInicioStr) {
+                    const inicio = new Date(parseInt(horaInicioStr, 10));
+                    const fin = new Date();
+                    const diffMs = fin - inicio;
+                    const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
+                    const fechaKey = fin.toISOString().split('T')[0];
+                    let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
+                    historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
+                    localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
+                }
+
+                localStorage.removeItem('bs_turno_inicio');
+                clearInterval(timerInterval);
+
+                const estadoInput = document.getElementById('perfilEstadoTurno');
+                estadoInput.value = "Fuera de Turno";
+                estadoInput.style.color = "#e84393";
+                btnFichaje.textContent = "Iniciar Turno";
+                btnFichaje.style.backgroundColor = "#0084d1";
+                panelRelevo.style.display = 'none';
+                renderizarCalendario();
+            }
+        }
+
+        function confirmarInicioTurno() {
+            const nombre = document.getElementById('perfilNombreInput').value.trim();
+            if (!nombre) {
+                alert("Por favor, ingresa tu Nombre y Apellido.");
+                return;
+            }
+
+            const companero = document.getElementById('relevoCompanero').value.trim();
+            const turno = document.getElementById('relevoTurno').value.trim();
+
+            if (!companero || !turno) {
+                alert("Debes indicar el compañero y el turno.");
+                return;
+            }
+
+            enTurno = true;
+            const ahoraMs = Date.now();
+            localStorage.setItem('bs_turno_inicio', ahoraMs);
+            iniciarContadorVisual(ahoraMs);
+
+            const btnFichaje = document.getElementById('btnFichaje');
+            btnFichaje.textContent = "Finalizar Turno";
+            btnFichaje.style.backgroundColor = "#d63031";
+            document.getElementById('panel-relevo-desplegable').style.display = 'none';
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+            const horas = String(ahora.getHours()).padStart(2, '0');
+            const minutos = String(ahora.getMinutes()).padStart(2, '0');
+            const hora24 = `${horas}:${minutos}`;
+
+            // Formato exacto con emojis del mensaje de Isaias Ojeda
+            const mensaje = "*BARRIO SOLES DEL OESTE*\n\n" +
+                "🚗 *AVISO DE INGRESO Y RELEVO*\n\n" +
+                "📅 Fecha: " + fecha + "\n" +
+                "⏰ Hora de llegada: " + hora24 + "\n" +
+                "👤 Ingresa: " + nombre + "\n" +
+                "🔄 Releva a: " + companero + "\n" +
+                "📍 Turno: " + turno + "\n\n" +
+                "✅ _Ingresando al puesto para iniciar funciones._";
+
+            const urlWhatsApp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(mensaje);
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        function iniciarContadorVisual(tiempoInicioMs) {
+            const estadoInput = document.getElementById('perfilEstadoTurno');
+            actualizarTiempo(tiempoInicioMs, estadoInput);
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                actualizarTiempo(tiempoInicioMs, estadoInput);
+            }, 1000);
+        }
+
+        function actualizarTiempo(tiempoInicioMs, elementoInput) {
+            const ahoraMs = Date.now();
+            const diferenciaSegundos = Math.floor((ahoraMs - tiempoInicioMs) / 1000);
+            const horas = Math.floor(diferenciaSegundos / 3600);
+            const minutos = Math.floor((diferenciaSegundos % 3600) / 60);
+            const segundos = diferenciaSegundos % 60;
+
+            const dInicio = new Date(tiempoInicioMs);
+            const hInicio = String(dInicio.getHours()).padStart(2, '0');
+            const mInicio = String(dInicio.getMinutes()).padStart(2, '0');
+            
+            elementoInput.value = `En Turno (${hInicio}:${mInicio}) - ${horas}h ${minutos}m ${segundos}s`;
+            elementoInput.style.color = "#00b894";
+        }
+
+        function cambiarMes(dir) {
+            fechaActualCalendario.setMonth(fechaActualCalendario.getMonth() + dir);
+            renderizarCalendario();
+        }
+
+        function renderizarCalendario() {
+            const year = fechaActualCalendario.getFullYear();
+            const month = fechaActualCalendario.getMonth();
+            const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            document.getElementById('calendarMonthYearTitle').innerText = `${mesesNombres[month]} ${year}`;
+
+            const primerDiaIndex = (new Date(year, month, 1).getDay() + 6) % 7;
+            const totalDiasMes = new Date(year, month + 1, 0).getDate();
+            const grid = document.getElementById('calendarGridDays');
+            grid.innerHTML = '';
+
+            let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
+            let totalMes = 0;
+
+            for (let i = 0; i < primerDiaIndex; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                grid.appendChild(cell);
+            }
+
+            for (let dia = 1; dia <= totalDiasMes; dia++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                const mesStr = String(month + 1).padStart(2, '0');
+                const diaStr = String(dia).padStart(2, '0');
+                const fechaKey = `${year}-${mesStr}-${diaStr}`;
+
+                const horasDia = historial[fechaKey] || 0;
+                if (horasDia > 0) {
+                    cell.classList.add('has-hours');
+                    totalMes += horasDia;
+                }
+                cell.innerHTML = `<span style="font-weight:bold;">${dia}</span><span style="font-size:0.65rem; color:var(--header-bg);">${horasDia > 0 ? horasDia + 'h' : ''}</span>`;
+                grid.appendChild(cell);
+            }
+            document.getElementById('totalHorasMes').innerText = totalMes.toFixed(1) + ' hs';
+        }
+
+        function goHome() {
+            const formRondin = document.getElementById('form-rondin');
+            const formGuardia = document.getElementById('form-guardia');
+            if (formRondin.style.display === 'block' || formGuardia.style.display === 'block') {
+                formRondin.style.display = 'none';
+                formGuardia.style.display = 'none';
+                document.getElementById('tools-menu').style.display = 'block';
+                document.getElementById('back-icon').style.display = 'inline';
+            } else {
+                switchTab('categorias');
+            }
+        }
+
         function openRondinForm() {
             document.getElementById('tools-menu').style.display = 'none';
             document.getElementById('form-rondin').style.display = 'block';
+            document.getElementById('form-guardia').style.display = 'none';
             document.getElementById('back-icon').style.display = 'inline';
+            
+            const ahora = new Date();
+            const h = String(ahora.getHours()).padStart(2, '0');
+            const m = String(ahora.getMinutes()).padStart(2, '0');
+            const inputIngreso = document.getElementById('rondinHoraIngreso');
+            if (!inputIngreso.value) inputIngreso.value = `${h}:${m}`;
         }
 
         function openGuardiaForm() {
             document.getElementById('tools-menu').style.display = 'none';
             document.getElementById('form-guardia').style.display = 'block';
+            document.getElementById('form-rondin').style.display = 'none';
             document.getElementById('back-icon').style.display = 'inline';
         }
 
-        function guardarDatosPerfil() {
-            const nombre = document.getElementById('perfilNombreInput').value;
-            const legajo = document.getElementById('perfilLegajo').value;
-            if (nombre) document.getElementById('perfilNombreVisual').innerText = nombre;
-            localStorage.setItem('puesto2_nombre', nombre);
-            localStorage.setItem('puesto2_legajo', legajo);
-        }
+        function switchTab(tabName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            const backIcon = document.getElementById('back-icon');
 
-        function gestionarTurnoClick() {
-            const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
-            const panel = document.getElementById('panel-relevo-desplegable');
-            if (turnoActivo === 'true') {
-                if (confirm('&iquest;Desea finalizar su turno actual?')) {
-                    localStorage.setItem('puesto2_turnoActivo', 'false');
-                    document.getElementById('perfilEstadoTurno').value = 'Fuera de Turno';
-                    document.getElementById('perfilEstadoTurno').style.color = '#e84393';
-                    document.getElementById('btnFichaje').innerText = 'Iniciar Turno';
-                    panel.style.display = 'none';
-                    alert('Turno finalizado correctamente.');
-                }
+            if (tabName === 'categorias') {
+                document.getElementById('view-categorias').classList.add('active');
+                document.getElementById('nav-btn-categorias').classList.add('active');
+                backIcon.style.display = 'none';
             } else {
-                panel.style.display = 'block';
+                backIcon.style.display = 'inline';
+                if (tabName === 'reportes') {
+                    document.getElementById('view-reportes').classList.add('active');
+                    document.getElementById('nav-btn-categorias').classList.add('active');
+                } else if (tabName === 'herramientas') {
+                    document.getElementById('view-herramientas').classList.add('active');
+                    document.getElementById('nav-btn-herramientas').classList.add('active');
+                    document.getElementById('tools-menu').style.display = 'block';
+                    document.getElementById('form-rondin').style.display = 'none';
+                    document.getElementById('form-guardia').style.display = 'none';
+                } else if (tabName === 'perfil') {
+                    document.getElementById('view-perfil').classList.add('active');
+                    document.getElementById('nav-btn-perfil').classList.add('active');
+                    backIcon.style.display = 'none';
+                }
             }
+            document.getElementById('mainContent').scrollTo(0, 0);
         }
 
-        function confirmarInicioTurno() {
-            localStorage.setItem('puesto2_turnoActivo', 'true');
-            document.getElementById('perfilEstadoTurno').value = 'En Turno Activo';
-            document.getElementById('perfilEstadoTurno').style.color = '#00b894';
-            document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
-            document.getElementById('panel-relevo-desplegable').style.display = 'none';
-            alert('&iexcl;Turno iniciado con &eacute;xito!');
-        }
-
-        window.onload = function() {
-            const nombreGuarda = localStorage.getItem('puesto2_nombre');
-            const legajoGuarda = localStorage.getItem('puesto2_legajo');
-            if (nombreGuarda) {
-                document.getElementById('perfilNombreInput').value = nombreGuarda;
-                document.getElementById('perfilNombreVisual').innerText = nombreGuarda;
-            }
-            if (legajoGuarda) {
-                document.getElementById('perfilLegajo').value = legajoGuarda;
-            }
-            const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
-            if (turnoActivo === 'true') {
-                document.getElementById('perfilEstadoTurno').value = 'En Turno Activo';
-                document.getElementById('perfilEstadoTurno').style.color = '#00b894';
-                document.getElementById('btnFichaje').innerText = 'Finalizar Turno';
-            }
-        };
-
-        function redactarConIAOffline() { alert("IA Local simulada: Redacción optimizada."); }
-        function redactarConIAOnline() { alert("IA Online simulada: Conexión establecida."); }
         function mostrarVistaPreviaReporte() {
-            const m = document.getElementById('repManzana').value;
-            const l = document.getElementById('repLote').value;
-            const t = document.getElementById('repTipoIncidencia').value;
-            const d = document.getElementById('repDetalle').value;
-            document.getElementById('textoPreviewSalida').value = `REPORTE PUESTO 2\nMza: ${m} | Lote: ${l}\nTipo: ${t}\nDetalle: ${d}`;
+            const manzana = document.getElementById('repManzana').value.trim() || "S/N";
+            const lote = document.getElementById('repLote').value.trim() || "S/N";
+            const tipoIncidencia = document.getElementById('repTipoIncidencia').value.trim() || "Novedad";
+            const detalle = document.getElementById('repDetalle').value.trim() || "Sin detalles";
+            const estadoFinal = document.getElementById('repEstadoFinal').value.trim() || "Sin novedades";
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+            const h = String(ahora.getHours()).padStart(2, '0');
+            const m = String(ahora.getMinutes()).padStart(2, '0');
+
+            let mensaje = "*BARRIO SOLES DEL OESTE*\n\n" +
+                "🚨 *INFORME DE NOVEDAD*\n\n" +
+                "📅 *Fecha:* " + fecha + " - *Hora:* " + h + ":" + m + "\n" +
+                "📍 *Ubicación:* Manzana " + manzana + ", Lote " + lote + "\n" +
+                "⚠️ *Incidencia:* " + tipoIncidencia + "\n\n" +
+                "📝 *Detalle de los Hechos:*\n" + detalle + "\n\n" +
+                "✅ *Estado / Conclusión:* " + estadoFinal;
+
+            document.getElementById('textoPreviewSalida').value = mensaje;
             document.getElementById('panel-vista-previa').style.display = 'block';
+            document.getElementById('panel-vista-previa').scrollIntoView({ behavior: 'smooth' });
         }
-        function enviarReporteWhatsAppDefinitivo() { alert("Redirigiendo a WhatsApp..."); }
-        function generarReporteRondinWhatsApp() { alert("Enviando rondín..."); }
-        function generarReporteGuardiaWhatsApp() { alert("Enviando parte..."); }
-        function toggleDetallesNovedadesGuardia() {
-            const val = document.getElementById('gSelectorNovedades').value;
-            document.getElementById('seccion-novedades-guardia').style.display = (val === 'si') ? 'block' : 'none';
+
+        function enviarReporteWhatsAppDefinitivo() {
+            const mensajeFinal = document.getElementById('textoPreviewSalida').value;
+            if (!mensajeFinal) return;
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensajeFinal), '_blank');
+        }
+
+        // --- FORMATO EXACTO DE RONDÍN (Basado en el mensaje de Franco) ---
+        function generarReporteRondinWhatsApp() {
+            const tipoRegistro = document.getElementById('rondinTipoRegistro').value;
+            const horaIngresoInput = document.getElementById('rondinHoraIngreso').value.trim();
+            const rondin = document.getElementById('rondinNombre').value.trim() || "Franco Gonzalez";
+            const clima = document.getElementById('rondinClima').value.trim() || "Soleado";
+            const llave = document.getElementById('rondinLlave').value.trim() || "Si";
+            const aceite = document.getElementById('rondinAceite').value.trim() || "Completo";
+            const combMoto = document.getElementById('rondinCombustibleMoto').value.trim() || "Completo";
+            const bidon = document.getElementById('rondinBidon').value.trim() || "Medio";
+            const baliza = document.getElementById('rondinBaliza').value.trim() || "Si";
+            const casco = document.getElementById('rondinCasco').value.trim() || "Si";
+            const estGeneral = document.getElementById('rondinEstadoGeneral').value.trim() || "Sin novedades";
+            
+            const linterna = document.getElementById('rondinLinterna').value.trim() || "En funcionamiento";
+            const batLinterna = document.getElementById('rondinBateriaLinterna').value.trim() || "Completa";
+            const handy = document.getElementById('rondinHandy').value.trim() || "En funcionamiento";
+            const batHandy = document.getElementById('rondinBateriaHandy').value.trim() || "Completa";
+            const novedades = document.getElementById('rondinNovedades').value.trim() || "Sin novedades";
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+            const h = String(ahora.getHours()).padStart(2, '0');
+            const m = String(ahora.getMinutes()).padStart(2, '0');
+            const horaActual = `${h}:${m}`;
+            const horaIngresoFinal = horaIngresoInput !== "" ? horaIngresoInput : horaActual;
+            
+            let textoSalida = "Pendiente";
+            if (tipoRegistro === "salida") textoSalida = horaActual;
+
+            const textoMensaje = "*SOLES DEL OESTE*\n\n" +
+                "RONDÍN: " + rondin + "\n" +
+                "FECHA: " + fecha + "\n" +
+                "INGRESO: " + horaIngresoFinal + " \n\n" +
+                "CLIMA: " + clima + " \n\n" +
+                "✨CONTROL DE LA MOTO: \n" +
+                "🔹 Llave: " + llave + " \n" +
+                "🔹 Nivel de aceite: " + aceite + "\n" +
+                "🔹 Nivel de Combustible de la moto: " + combMoto + "\n" +
+                "Bidón : " + bidon + " \n\n" +
+                "🔹 BALIZA AZUL: " + baliza + " \n" +
+                "🔹 Casco: " + casco + " \n" +
+                "🔹 Estado General: " + estGeneral + " \n\n\n" +
+                "✨CONTROL DE ELEMENTOS DE TRABAJO:\n\n" +
+                "🔹 Linterna: " + linterna + " \n" +
+                "  🔋 " + batLinterna + "\n" +
+                "🔹 Handy: " + handy + " \n" +
+                "  🔋 " + batHandy + "\n\n" +
+                "SALIDA: " + textoSalida + "\n" +
+                novedades;
+
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(textoMensaje), '_blank');
+        }
+
+        // --- FORMATO EXACTO DE PARTE DEL PORTERO (Basado en el mensaje de Isaias Ojeda) ---
+        function generarReporteGuardiaWhatsApp() {
+            const guardia = document.getElementById('gGuardia').value.trim() || "Tobías biasucci";
+            const turno = document.getElementById('gTurno').value.trim() || "Mañana";
+            const ingresoPers = document.getElementById('gIngresoPers').value.trim() || "4";
+            const salidaPers = document.getElementById('gSalidaPers').value.trim() || "7";
+            const ingresoVeh = document.getElementById('gIngresoVeh').value.trim() || "101";
+            const salidaVeh = document.getElementById('gSalidaVeh').value.trim() || "128";
+
+            const combMoto = document.getElementById('gMotoCombustible').value.trim() || "Completo";
+            const bidon = document.getElementById('gMotoBidon').value.trim() || "2,5 lts";
+            const linterna1 = document.getElementById('gLinterna1').value.trim() || "Completa";
+            const linterna2 = document.getElementById('gLinterna2').value.trim() || "Completa";
+            const handy1 = document.getElementById('gHandy1').value.trim() || "Completa";
+            const handy2 = document.getElementById('gHandy2').value.trim() || "Completa";
+
+            const selectorNov = document.getElementById('gSelectorNovedades').value;
+            let observacion, motoLlave, motoAceite, motoBaliza, motoCasco, motoEstado;
+            let linternaCant, estadoLinternas, handyCant, estadoHandys;
+            let cabinaLimpieza, caloventor, monitores, pavaElectrica, baterias, responsable;
+
+            const claveStorage = 'bs_parte_' + guardia.toLowerCase().replace(/\s+/g, '_');
+
+            if (selectorNov === 'no') {
+                observacion = "En orden y funcionando";
+                motoLlave = "si"; motoAceite = "Completo"; motoBaliza = "si"; motoCasco = "si"; motoEstado = "En funcionamiento";
+                linternaCant = "2"; estadoLinternas = "Ambas en funcionamiento"; handyCant = "2"; estadoHandys = "Ambos en funcionamiento";
+                cabinaLimpieza = "Cabina limpia y en orden"; caloventor = "En funcionamiento"; monitores = "Sin novedades";
+                pavaElectrica = "En funcionamiento y sin problemas"; baterias = "2 colocadas - sin conexión"; responsable = guardia;
+            } else {
+                observacion = document.getElementById('gObservacion').value.trim() || "En orden y funcionando";
+                motoLlave = document.getElementById('gMotoLlave').value.trim() || "si";
+                motoAceite = document.getElementById('gMotoAceite').value.trim() || "Completo";
+                motoBaliza = document.getElementById('gMotoBaliza').value.trim() || "si";
+                motoCasco = document.getElementById('gMotoCasco').value.trim() || "si";
+                motoEstado = document.getElementById('gMotoEstado').value.trim() || "En funcionamiento";
+                linternaCant = document.getElementById('gLinternaCant').value.trim() || "2";
+                estadoLinternas = document.getElementById('gEstadoLinternas').value.trim() || "Ambas en funcionamiento";
+                handyCant = document.getElementById('gHandyCant').value.trim() || "2";
+                estadoHandys = document.getElementById('gEstadoHandys').value.trim() || "Ambos en funcionamiento";
+                cabinaLimpieza = document.getElementById('gCabinaLimpieza').value.trim() || "Cabina limpia y en orden";
+                caloventor = document.getElementById('gCaloventor').value.trim() || "En funcionamiento";
+                monitores = document.getElementById('gMonitores').value.trim() || "Sin novedades";
+                pavaElectrica = document.getElementById('gPava').value.trim() || "En funcionamiento y sin problemas";
+                baterias = document.getElementById('gBaterias').value.trim() || "2 colocadas - sin conexión";
+                responsable = document.getElementById('gResponsable').value.trim() || guardia;
+            }
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+
+            const mensaje = "BARRIO SOLES DEL OESTE\n\n" +
+                "Parte del Portero: " + guardia + "\n\n" +
+                "🔘 fecha: " + fecha + "\n\n" +
+                "🔘 turno de: " + turno + "\n\n" +
+                "🔘 INGRESO de personas: " + ingresoPers + "\n" +
+                "🔘 SALIDA de Personas: " + salidaPers + "\n\n" +
+                "🔘 INGRESO de vehículos: " + ingresoVeh + "\n" +
+                "🔘 SALIDA de vehículos: " + salidaVeh + "\n\n" +
+                "🔘 Observación: " + observacion + "\n\n" +
+                "✨ CONTROL DE LA MOTO:\n" +
+                "🔸 Llave : " + motoLlave + "\n" +
+                "🔸 Nivel de aceite: " + motoAceite + "\n" +
+                "🔸 Nivel de Combustible:\n" +
+                "Moto: " + combMoto + "\n" +
+                "Bidón : " + bidon + "\n\n" +
+                "🔸 BALIZA AZUL: " + motoBaliza + "\n" +
+                "🔸 Casco:  " + motoCasco + "\n" +
+                "🔸 Estado General:\n" +
+                motoEstado + "\n\n" +
+                "✨ CONTROL DE ELEMENTOS DE TRABAJO:\n\n" +
+                "🔸 LINTERNA CANTIDAD Y ESTADO: " + linternaCant + "\n" +
+                "🔸 Estado General: " + estadoLinternas + "\n" +
+                "🔋 Puesto: " + linterna1 + "\n" +
+                "🔋 Rondín: " + linterna2 + "\n\n" +
+                "🔸 HANDYS FUNCIONAMIENTO , CANTIDAD Y ESTADO: " + handyCant + "\n" +
+                "🔸 Estado General: " + estadoHandys + "\n" +
+                "🔋 Puesto: " + handy1 + "\n" +
+                "🔋 Rondín: " + handy2 + "\n\n" +
+                "✨ LIMPIEZA Y ESTADO CABINA DE GUARDIA : " + cabinaLimpieza + "\n\n" +
+                "• ✅ *CABINA CON CORRIENTE ELÉCTRICA*\n\n" +
+                "🔸 *CALOVENTOR*\n" + caloventor + "\n\n" +
+                "🔸 *MONITOR/CÁMARAS*\n" + monitores + "\n\n" +
+                "🔸 *PAVA ELÉCTRICA*\n" + pavaElectrica + "\n\n" +
+                "🔸 BATERÍAS: " + baterias + "\n\n" +
+                "🔘 *PORTERO ENTRANTE Y RESPONSABLE QUE HE CONTROLADO TODO EN EL RELEVO Y ME HAGO CARGO:* " + responsable;
+
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensaje), '_blank');
         }
     </script>
 </body>
