@@ -377,8 +377,8 @@
             <h1 id="app-title">B.S. Sentir - Puesto 2</h1>
         </div>
         <div class="header-actions">
-            <!-- Botón manual para buscar actualizaciones y limpiar caché -->
-            <button class="icon-btn" onclick="forzarActualizacionApp()" title="Buscar actualizaciones">&#8635;</button>
+            <!-- Botón manual para forzar limpieza de caché y refrescar -->
+            <button class="icon-btn" onclick="limpiarCacheYRecargar()" title="Actualizar aplicación">&#8635;</button>
             <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Cambiar Tema">&#127769;</button>
         </div>
     </header>
@@ -616,13 +616,13 @@
                 <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rond&iacute;n a WhatsApp</button>
             </div>
 
-            <!-- Formulario del Parte del Guardia Optimizado con Aviso de Perfil -->
+            <!-- Formulario del Parte del Guardia Optimizado -->
             <div id="form-guardia" style="display: none;">
                 <h2 class="section-title">Parte del Portero (Guardias)</h2>
                 
                 <div style="background-color: rgba(74, 144, 226, 0.12); border: 1px solid var(--header-bg); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
                     <p style="font-size: 0.85rem; color: var(--text-color); line-height: 1.4;">
-                        &#8505;&#65039; <b>Aviso de Memoria por Perfil:</b> El sistema recuerda el último parte personalizado que guardaste bajo tu nombre de perfil actual. Si seleccionas <i>"No"</i> en novedades, se enviará tu última configuración guardada de equipos actualizando exclusivamente los accesos del día.
+                        &#8505;&#65039; <b>Aviso:</b> El campo del responsable se completa automáticamente con tu nombre ingresado en el perfil.
                     </p>
                 </div>
 
@@ -768,7 +768,7 @@
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label>Portero Entrante y Responsable:</label>
-                    <input type="text" id="gResponsable" placeholder="Ej: Tobías biasucci">
+                    <input type="text" id="gResponsable" placeholder="Ej: Tobías biasucci" readonly style="background-color: var(--border-color); font-weight: bold;">
                 </div>
 
                 <button class="btn-action" onclick="generarReporteGuardiaWhatsApp()">Enviar Parte a WhatsApp</button>
@@ -805,8 +805,8 @@
             </div>
 
             <div class="profile-card">
-                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno (PIN Aleatorio)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra el inicio de tu jornada para enviar el aviso por WhatsApp y controlar las horas.</p>
+                <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra tu ingreso o salida. Al ingresar, si había un turno anterior abierto, se cerrará automáticamente.</p>
                 
                 <div class="form-group">
                     <label>Estado Actual:</label>
@@ -817,15 +817,6 @@
 
                 <!-- Panel Desplegable para el Relevo -->
                 <div id="panel-relevo-desplegable" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
-                    <!-- Sección de PIN Obligatorio si hay turno previo -->
-                    <div id="seccion-pin-ingreso" style="display: none; background-color: rgba(214, 48, 49, 0.08); border: 1px solid #d63031; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
-                        <p style="font-size: 0.85rem; color: #d63031; font-weight: bold; margin-bottom: 5px;">⚠️ Hay un turno anterior activo.</p>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Ingrese el código PIN de 4 dígitos provisto por el guardia saliente:</p>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <input type="text" id="inputPinRelevo" maxlength="4" placeholder="Ej: 4892" style="text-align: center; font-weight: bold; letter-spacing: 2px;">
-                        </div>
-                    </div>
-
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Datos del Relevo para WhatsApp:</h4>
                     
                     <div class="form-group">
@@ -891,33 +882,20 @@
     </nav>
 
     <script>
-        const VERSION_ACTUAL = "1.0.0";
-
-        async function forzarActualizacionApp() {
-            try {
-                const response = await fetch('version.json?t=' + new Date().getTime());
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.version && data.version !== VERSION_ACTUAL) {
-                        alert(`¡Nueva versión ${data.version} detectada! Actualizando...`);
-                    } else {
-                        alert(`La aplicación está actualizada (${VERSION_ACTUAL}).`);
-                    }
-                }
-            } catch (error) {
-                console.log("Comprobación offline.");
-            }
-
+        // Limpieza profunda al actualizar para evitar datos viejos de PIN o turnos fantasma
+        function limpiarCacheYRecargar() {
+            localStorage.removeItem('puesto2_pinActual');
+            localStorage.removeItem('puesto2_turnoPendienteCierre');
             if (window.caches) {
                 caches.keys().then(names => {
                     names.forEach(name => caches.delete(name));
                 });
             }
+            alert("🧹 Caché y datos viejos limpiados. Actualizando aplicación...");
             window.location.reload(true);
         }
 
         let fechaActualCalendario = new Date();
-        let timerInterval = null;
         let enTurno = false;
 
         function redactarConIAOffline() {
@@ -971,7 +949,9 @@
                 document.getElementById('perfilNombreInput').value = guardName;
                 document.getElementById('perfilNombreVisual').textContent = guardName;
                 const inputGuardiaParte = document.getElementById('gGuardia');
-                if(inputGuardiaParte && !inputGuardiaParte.value) inputGuardiaParte.value = guardName;
+                const inputResponsable = document.getElementById('gResponsable');
+                if(inputGuardiaParte) inputGuardiaParte.value = guardName;
+                if(inputResponsable) inputResponsable.value = guardName;
                 cargarPartePorGuardia(guardName);
             }
 
@@ -997,10 +977,10 @@
             localStorage.setItem('bs_guard_legajo', legajo);
 
             const inputGuardiaParte = document.getElementById('gGuardia');
-            if(inputGuardiaParte) {
-                inputGuardiaParte.value = name;
-                cargarPartePorGuardia(name);
-            }
+            const inputResponsable = document.getElementById('gResponsable');
+            if(inputGuardiaParte) inputGuardiaParte.value = name;
+            if(inputResponsable) inputResponsable.value = name;
+            if(name) cargarPartePorGuardia(name);
         }
 
         function cargarPartePorGuardia(nombreGuardia) {
@@ -1020,55 +1000,42 @@
             }
         }
 
-        // --- GESTIÓN DE TURNO Y PIN DE RELEVO OBLIGATORIO ---
+        // --- GESTIÓN DE TURNO Y CIERRE AUTOMÁTICO DE RELEVO ---
         function gestionarTurnoClick() {
             const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
             const panel = document.getElementById('panel-relevo-desplegable');
-            const seccionPin = document.getElementById('seccion-pin-ingreso');
             const btnFichaje = document.getElementById('btnFichaje');
 
             if (turnoActivo === 'true') {
-                if (confirm('¿Desea finalizar su turno actual y generar el PIN de relevo para su compañero?')) {
-                    // Generar código PIN aleatorio de 4 dígitos
-                    const nuevoPin = Math.floor(1000 + Math.random() * 9000).toString();
-                    localStorage.setItem('puesto2_pinActual', nuevoPin);
-
-                    // Registrar horas trabajadas
-                    const horaInicioStr = localStorage.getItem('puesto2_horaInicio');
-                    if (horaInicioStr) {
-                        const inicio = new Date(horaInicioStr);
-                        const fin = new Date();
-                        const diffMs = fin - inicio;
-                        const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
-                        const fechaKey = fin.toISOString().split('T')[0];
-                        let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
-                        historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
-                        localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
-                    }
-
-                    // Cambiar estado a inactivo pero manteniendo la bandera de turno pendiente de relevo con PIN
-                    localStorage.removeItem('bs_turno_inicio');
-                    localStorage.setItem('puesto2_turnoActivo', 'false');
-
+                if (confirm('¿Desea finalizar su turno actual?')) {
+                    cerrarTurnoActualGuardado();
                     document.getElementById('perfilEstadoTurno').value = 'Fuera de Turno';
                     document.getElementById('perfilEstadoTurno').style.color = '#e84393';
                     btnFichaje.innerText = 'Iniciar Turno';
-
-                    alert(`🔒 Turno finalizado con éxito.\n\nEl código PIN de relevo de 4 dígitos generado para tu compañero es:\n\n👉 [ ${nuevoPin} ] 👈\n\nDictale este número al guardia entrante.`);
+                    alert('Turno finalizado correctamente.');
                     renderizarCalendario();
                 }
             } else {
                 panel.style.display = 'block';
                 btnFichaje.textContent = "Cancelar";
-
-                // Verificar si hay un PIN activo esperando relevo
-                const pinEsperado = localStorage.getItem('puesto2_pinActual');
-                if (pinEsperado) {
-                    seccionPin.style.display = 'block';
-                } else {
-                    seccionPin.style.display = 'none';
-                }
             }
+        }
+
+        function cerrarTurnoActualGuardado() {
+            const horaInicioStr = localStorage.getItem('puesto2_horaInicio');
+            if (horaInicioStr) {
+                const inicio = new Date(horaInicioStr);
+                const fin = new Date();
+                const diffMs = fin - inicio;
+                const horasTrabajadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
+                const fechaKey = fin.toISOString().split('T')[0];
+                let historial = JSON.parse(localStorage.getItem('puesto2_historialHoras') || '{}');
+                historial[fechaKey] = (historial[fechaKey] || 0) + horasTrabajadas;
+                localStorage.setItem('puesto2_historialHoras', JSON.stringify(historial));
+            }
+            localStorage.removeItem('bs_turno_inicio');
+            localStorage.removeItem('puesto2_horaInicio');
+            localStorage.setItem('puesto2_turnoActivo', 'false');
         }
 
         function confirmarInicioTurno() {
@@ -1076,19 +1043,6 @@
             if (!nombre) {
                 alert("Por favor, ingresa tu Nombre y Apellido.");
                 return;
-            }
-
-            // Validar PIN si hay un turno previo pendiente de relevo
-            const pinEsperado = localStorage.getItem('puesto2_pinActual');
-            const seccionPin = document.getElementById('seccion-pin-ingreso');
-            if (pinEsperado && seccionPin.style.display === 'block') {
-                const pinIngresado = document.getElementById('inputPinRelevo').value.trim();
-                if (pinIngresado !== pinEsperado) {
-                    alert("❌ Código PIN incorrecto. Debes solicitar el PIN de 4 dígitos al guardia saliente para poder iniciar tu turno.");
-                    return;
-                }
-                // Limpiar el PIN una vez validado correctamente
-                localStorage.removeItem('puesto2_pinActual');
             }
 
             const companero = document.getElementById('relevoCompanero').value.trim();
@@ -1099,11 +1053,20 @@
                 return;
             }
 
+            // CIERRE AUTOMÁTICO DEL TURNO ANTERIOR AL HACER EL RELEVO
+            cerrarTurnoActualGuardado();
+
             enTurno = true;
             const ahoraMs = Date.now();
             localStorage.setItem('bs_turno_inicio', ahoraMs);
             localStorage.setItem('puesto2_horaInicio', new Date().toISOString());
             localStorage.setItem('puesto2_turnoActivo', 'true');
+
+            // Actualizar automáticamente el responsable del parte con el guardia entrante
+            const inputResponsable = document.getElementById('gResponsable');
+            const inputGuardiaParte = document.getElementById('gGuardia');
+            if(inputResponsable) inputResponsable.value = nombre;
+            if(inputGuardiaParte) inputGuardiaParte.value = nombre;
 
             const btnFichaje = document.getElementById('btnFichaje');
             btnFichaje.textContent = "Finalizar Turno";
@@ -1116,7 +1079,6 @@
             const minutos = String(ahora.getMinutes()).padStart(2, '0');
             const hora24 = `${horas}:${minutos}`;
 
-            // Formato exacto con emojis del mensaje de Isaias Ojeda
             const mensaje = "*BARRIO SOLES DEL OESTE*\n\n" +
                 "🚗 *AVISO DE INGRESO Y RELEVO*\n\n" +
                 "📅 Fecha: " + fecha + "\n" +
@@ -1204,6 +1166,13 @@
             document.getElementById('form-guardia').style.display = 'block';
             document.getElementById('form-rondin').style.display = 'none';
             document.getElementById('back-icon').style.display = 'inline';
+
+            // Sincronizar el responsable con el perfil actual al abrir
+            const perfilNombre = document.getElementById('perfilNombreInput').value.trim();
+            if(perfilNombre) {
+                document.getElementById('gGuardia').value = perfilNombre;
+                document.getElementById('gResponsable').value = perfilNombre;
+            }
         }
 
         function switchTab(tabName) {
@@ -1320,7 +1289,8 @@
         }
 
         function generarReporteGuardiaWhatsApp() {
-            const guardia = document.getElementById('gGuardia').value.trim() || "Tobías biasucci";
+            const perfilActual = document.getElementById('perfilNombreInput').value.trim();
+            const guardia = perfilActual || document.getElementById('gGuardia').value.trim() || "Guardia Puesto 2";
             const turno = document.getElementById('gTurno').value.trim() || "Mañana";
             const ingresoPers = document.getElementById('gIngresoPers').value.trim() || "4";
             const salidaPers = document.getElementById('gSalidaPers').value.trim() || "7";
@@ -1337,14 +1307,14 @@
             const selectorNov = document.getElementById('gSelectorNovedades').value;
             let observacion, motoLlave, motoAceite, motoBaliza, motoCasco, motoEstado;
             let linternaCant, estadoLinternas, handyCant, estadoHandys;
-            let cabinaLimpieza, caloventor, monitores, pavaElectrica, baterias, responsable;
+            let cabinaLimpieza, caloventor, monitores, pavaElectrica, baterias;
 
             if (selectorNov === 'no') {
                 observacion = "En orden y funcionando";
                 motoLlave = "si"; motoAceite = "Completo"; motoBaliza = "si"; motoCasco = "si"; motoEstado = "En funcionamiento";
                 linternaCant = "2"; estadoLinternas = "Ambas en funcionamiento"; handyCant = "2"; estadoHandys = "Ambos en funcionamiento";
                 cabinaLimpieza = "Cabina limpia y en orden"; caloventor = "En funcionamiento"; monitores = "Sin novedades";
-                pavaElectrica = "En funcionamiento y sin problemas"; baterias = "2 colocadas - sin conexión"; responsable = guardia;
+                pavaElectrica = "En funcionamiento y sin problemas"; baterias = "2 colocadas - sin conexión";
             } else {
                 observacion = document.getElementById('gObservacion').value.trim() || "En orden y funcionando";
                 motoLlave = document.getElementById('gMotoLlave').value.trim() || "si";
@@ -1361,11 +1331,13 @@
                 monitores = document.getElementById('gMonitores').value.trim() || "Sin novedades";
                 pavaElectrica = document.getElementById('gPava').value.trim() || "En funcionamiento y sin problemas";
                 baterias = document.getElementById('gBaterias').value.trim() || "2 colocadas - sin conexión";
-                responsable = document.getElementById('gResponsable').value.trim() || guardia;
             }
 
             const ahora = new Date();
             const fecha = ahora.toLocaleDateString();
+
+            // El responsable siempre toma el nombre del perfil activo del guardia entrante
+            const responsableFinal = perfilActual;
 
             const mensaje = "BARRIO SOLES DEL OESTE\n\n" +
                 "Parte del Portero: " + guardia + "\n\n" +
@@ -1401,7 +1373,7 @@
                 "🔸 *MONITOR/CÁMARAS*\n" + monitores + "\n\n" +
                 "🔸 *PAVA ELÉCTRICA*\n" + pavaElectrica + "\n\n" +
                 "🔸 BATERÍAS: " + baterias + "\n\n" +
-                "🔘 *PORTERO ENTRANTE Y RESPONSABLE QUE HE CONTROLADO TODO EN EL RELEVO Y ME HAGO CARGO:* " + responsable;
+                "🔘 *PORTERO ENTRANTE Y RESPONSABLE QUE HE CONTROLADO TODO EN EL RELEVO Y ME HAGO CARGO:* " + responsableFinal;
 
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensaje), '_blank');
         }
