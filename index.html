@@ -616,13 +616,13 @@
                 <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rond&iacute;n a WhatsApp</button>
             </div>
 
-            <!-- Formulario del Parte del Guardia Optimizado -->
+            <!-- Formulario del Parte del Guardia Optimizado con Memoria y Responsable Editable -->
             <div id="form-guardia" style="display: none;">
                 <h2 class="section-title">Parte del Portero (Guardias)</h2>
                 
                 <div style="background-color: rgba(74, 144, 226, 0.12); border: 1px solid var(--header-bg); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
                     <p style="font-size: 0.85rem; color: var(--text-color); line-height: 1.4;">
-                        &#8505;&#65039; <b>Aviso:</b> El campo del responsable se completa automáticamente con tu nombre ingresado en el perfil.
+                        &#8505;&#65039; <b>Aviso de Memoria:</b> Si seleccionas <i>"No"</i> en novedades, el sistema guardará y mantendrá tus datos anteriores de equipos. El campo <b>Responsable</b> es libre y editable para que el guardia que entrega indique quién queda a cargo.
                     </p>
                 </div>
 
@@ -766,9 +766,10 @@
                     </div>
                 </div>
 
+                <!-- Campo Responsable Libre y Editable -->
                 <div class="form-group" style="margin-top: 15px;">
-                    <label>Portero Entrante y Responsable:</label>
-                    <input type="text" id="gResponsable" placeholder="Ej: Tobías biasucci" readonly style="background-color: var(--border-color); font-weight: bold;">
+                    <label>Portero Entrante y Responsable (Editable):</label>
+                    <input type="text" id="gResponsable" placeholder="Ej: Tobías biasucci">
                 </div>
 
                 <button class="btn-action" onclick="generarReporteGuardiaWhatsApp()">Enviar Parte a WhatsApp</button>
@@ -806,7 +807,7 @@
 
             <div class="profile-card">
                 <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra tu ingreso o salida. Al ingresar, si había un turno anterior abierto, se cerrará automáticamente.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra tu ingreso o salida. Al ingresar, el sistema finaliza automáticamente el turno anterior.</p>
                 
                 <div class="form-group">
                     <label>Estado Actual:</label>
@@ -882,7 +883,7 @@
     </nav>
 
     <script>
-        // Limpieza profunda al actualizar para evitar datos viejos de PIN o turnos fantasma
+        // Limpieza profunda al actualizar para evitar datos viejos
         function limpiarCacheYRecargar() {
             localStorage.removeItem('puesto2_pinActual');
             localStorage.removeItem('puesto2_turnoPendienteCierre');
@@ -950,8 +951,8 @@
                 document.getElementById('perfilNombreVisual').textContent = guardName;
                 const inputGuardiaParte = document.getElementById('gGuardia');
                 const inputResponsable = document.getElementById('gResponsable');
-                if(inputGuardiaParte) inputGuardiaParte.value = guardName;
-                if(inputResponsable) inputResponsable.value = guardName;
+                if(inputGuardiaParte && !inputGuardiaParte.value) inputGuardiaParte.value = guardName;
+                if(inputResponsable && !inputResponsable.value) inputResponsable.value = guardName;
                 cargarPartePorGuardia(guardName);
             }
 
@@ -977,9 +978,7 @@
             localStorage.setItem('bs_guard_legajo', legajo);
 
             const inputGuardiaParte = document.getElementById('gGuardia');
-            const inputResponsable = document.getElementById('gResponsable');
-            if(inputGuardiaParte) inputGuardiaParte.value = name;
-            if(inputResponsable) inputResponsable.value = name;
+            if(inputGuardiaParte && !inputGuardiaParte.value) inputGuardiaParte.value = name;
             if(name) cargarPartePorGuardia(name);
         }
 
@@ -1053,7 +1052,7 @@
                 return;
             }
 
-            // CIERRE AUTOMÁTICO DEL TURNO ANTERIOR AL HACER EL RELEVO
+            // CIERRE AUTOMÁTICO DEL TURNO ANTERIOR AL HACER EL RELEVO (TRABAJÓ SUS 8 HS Y ENTRA EL NUEVO)
             cerrarTurnoActualGuardado();
 
             enTurno = true;
@@ -1061,12 +1060,6 @@
             localStorage.setItem('bs_turno_inicio', ahoraMs);
             localStorage.setItem('puesto2_horaInicio', new Date().toISOString());
             localStorage.setItem('puesto2_turnoActivo', 'true');
-
-            // Actualizar automáticamente el responsable del parte con el guardia entrante
-            const inputResponsable = document.getElementById('gResponsable');
-            const inputGuardiaParte = document.getElementById('gGuardia');
-            if(inputResponsable) inputResponsable.value = nombre;
-            if(inputGuardiaParte) inputGuardiaParte.value = nombre;
 
             const btnFichaje = document.getElementById('btnFichaje');
             btnFichaje.textContent = "Finalizar Turno";
@@ -1166,13 +1159,6 @@
             document.getElementById('form-guardia').style.display = 'block';
             document.getElementById('form-rondin').style.display = 'none';
             document.getElementById('back-icon').style.display = 'inline';
-
-            // Sincronizar el responsable con el perfil actual al abrir
-            const perfilNombre = document.getElementById('perfilNombreInput').value.trim();
-            if(perfilNombre) {
-                document.getElementById('gGuardia').value = perfilNombre;
-                document.getElementById('gResponsable').value = perfilNombre;
-            }
         }
 
         function switchTab(tabName) {
@@ -1289,8 +1275,7 @@
         }
 
         function generarReporteGuardiaWhatsApp() {
-            const perfilActual = document.getElementById('perfilNombreInput').value.trim();
-            const guardia = perfilActual || document.getElementById('gGuardia').value.trim() || "Guardia Puesto 2";
+            const guardia = document.getElementById('gGuardia').value.trim() || "Guardia Puesto 2";
             const turno = document.getElementById('gTurno').value.trim() || "Mañana";
             const ingresoPers = document.getElementById('gIngresoPers').value.trim() || "4";
             const salidaPers = document.getElementById('gSalidaPers').value.trim() || "7";
@@ -1331,13 +1316,25 @@
                 monitores = document.getElementById('gMonitores').value.trim() || "Sin novedades";
                 pavaElectrica = document.getElementById('gPava').value.trim() || "En funcionamiento y sin problemas";
                 baterias = document.getElementById('gBaterias').value.trim() || "2 colocadas - sin conexión";
+
+                // Guardar la configuración de novedades personalizada si se modificó
+                const nombreGuardiaKey = guardia.toLowerCase().replace(/\s+/g, '_');
+                const datosNovedad = {
+                    combustibleMoto: combMoto,
+                    bidon: bidon,
+                    linterna1: linterna1,
+                    linterna2: linterna2,
+                    handy1: handy1,
+                    handy2: handy2
+                };
+                localStorage.setItem('bs_parte_' + nombreGuardiaKey, JSON.stringify(datosNovedad));
             }
 
             const ahora = new Date();
             const fecha = ahora.toLocaleDateString();
 
-            // El responsable siempre toma el nombre del perfil activo del guardia entrante
-            const responsableFinal = perfilActual;
+            // El responsable toma exactamente lo que el guardia escriba en la casilla editable
+            const responsableFinal = document.getElementById('gResponsable').value.trim() || guardia;
 
             const mensaje = "BARRIO SOLES DEL OESTE\n\n" +
                 "Parte del Portero: " + guardia + "\n\n" +
