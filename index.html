@@ -1456,4 +1456,234 @@
             const ahora = new Date();
             const h = String(ahora.getHours()).padStart(2, '0');
             const m = String(ahora.getMinutes()).padStart(2, '0');
-            const inputIngreso = document.
+            const inputIngreso = document.getElementById('rondinHoraIngreso');
+            if (!inputIngreso.value) inputIngreso.value = `${h}:${m}`;
+        }
+
+        function openGuardiaForm() {
+            document.getElementById('tools-menu').style.display = 'none';
+            document.getElementById('form-guardia').style.display = 'block';
+            document.getElementById('form-rondin').style.display = 'none';
+            document.getElementById('back-icon').style.display = 'inline';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            const backIcon = document.getElementById('back-icon');
+
+            if (tabName === 'categorias') {
+                document.getElementById('view-categorias').classList.add('active');
+                document.getElementById('nav-btn-categorias').classList.add('active');
+                backIcon.style.display = 'none';
+            } else {
+                backIcon.style.display = 'inline';
+                if (tabName === 'reportes') {
+                    document.getElementById('view-reportes').classList.add('active');
+                    document.getElementById('nav-btn-categorias').classList.add('active');
+                } else if (tabName === 'herramientas') {
+                    document.getElementById('view-herramientas').classList.add('active');
+                    document.getElementById('nav-btn-herramientas').classList.add('active');
+                    document.getElementById('tools-menu').style.display = 'block';
+                    document.getElementById('form-rondin').style.display = 'none';
+                    document.getElementById('form-guardia').style.display = 'none';
+                } else if (tabName === 'perfil') {
+                    document.getElementById('view-perfil').classList.add('active');
+                    document.getElementById('nav-btn-perfil').classList.add('active');
+                    backIcon.style.display = 'none';
+                } else if (tabName === 'entretenimiento') {
+                    document.getElementById('view-entretenimiento').classList.add('active');
+                    document.getElementById('nav-btn-entretenimiento').classList.add('active');
+                    backIcon.style.display = 'none';
+                } else if (tabName === 'truco') {
+                    document.getElementById('view-truco').classList.add('active');
+                    document.getElementById('nav-btn-entretenimiento').classList.add('active');
+                }
+            }
+            document.getElementById('mainContent').scrollTo(0, 0);
+        }
+
+        function mostrarVistaPreviaReporte() {
+            const manzana = document.getElementById('repManzana').value.trim() || "S/N";
+            const lote = document.getElementById('repLote').value.trim() || "S/N";
+            const tipoIncidencia = document.getElementById('repTipoIncidencia').value.trim() || "Novedad";
+            const detalle = document.getElementById('repDetalle').value.trim() || "Sin detalles";
+            const estadoFinal = document.getElementById('repEstadoFinal').value.trim() || "Sin novedades";
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+            const h = String(ahora.getHours()).padStart(2, '0');
+            const m = String(ahora.getMinutes()).padStart(2, '0');
+
+            let mensaje = "*BARRIO SOLES DEL OESTE*\n\n" +
+                "🚨 *INFORME DE NOVEDAD*\n\n" +
+                "📅 *Fecha:* " + fecha + " - *Hora:* " + h + ":" + m + "\n" +
+                "📍 *Ubicación:* Manzana " + manzana + ", Lote " + lote + "\n" +
+                "⚠️ *Incidencia:* " + tipoIncidencia + "\n\n" +
+                "📝 *Detalle de los Hechos:*\n" + detalle + "\n\n" +
+                "✅ *Estado / Conclusión:* " + estadoFinal;
+
+            document.getElementById('textoPreviewSalida').value = mensaje;
+            document.getElementById('panel-vista-previa').style.display = 'block';
+            document.getElementById('panel-vista-previa').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function enviarReporteWhatsAppDefinitivo() {
+            const mensajeFinal = document.getElementById('textoPreviewSalida').value;
+            if (!mensajeFinal) return;
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensajeFinal), '_blank');
+        }
+
+        function generarReporteRondinWhatsApp() {
+            const tipoRegistro = document.getElementById('rondinTipoRegistro').value;
+            const horaIngresoInput = document.getElementById('rondinHoraIngreso').value.trim();
+            const rondin = document.getElementById('rondinNombre').value.trim() || "Franco Gonzalez";
+            const clima = document.getElementById('rondinClima').value.trim() || "Soleado";
+            const llave = document.getElementById('rondinLlave').value.trim() || "Si";
+            const aceite = document.getElementById('rondinAceite').value.trim() || "Completo";
+            const combMoto = document.getElementById('rondinCombustibleMoto').value.trim() || "Completo";
+            const bidon = document.getElementById('rondinBidon').value.trim() || "Medio";
+            const baliza = document.getElementById('rondinBaliza').value.trim() || "Si";
+            const casco = document.getElementById('rondinCasco').value.trim() || "Si";
+            const estGeneral = document.getElementById('rondinEstadoGeneral').value.trim() || "Sin novedades";
+            
+            const linterna = document.getElementById('rondinLinterna').value.trim() || "En funcionamiento";
+            const batLinterna = document.getElementById('rondinBateriaLinterna').value.trim() || "Completa";
+            const handy = document.getElementById('rondinHandy').value.trim() || "En funcionamiento";
+            const batHandy = document.getElementById('rondinBateriaHandy').value.trim() || "Completa";
+            const novedades = document.getElementById('rondinNovedades').value.trim() || "Sin novedades";
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+            const h = String(ahora.getHours()).padStart(2, '0');
+            const m = String(ahora.getMinutes()).padStart(2, '0');
+            const horaActual = `${h}:${m}`;
+            const horaIngresoFinal = horaIngresoInput !== "" ? horaIngresoInput : horaActual;
+            
+            let textoSalida = "Pendiente";
+            if (tipoRegistro === "salida") textoSalida = horaActual;
+
+            const textoMensaje = "*SOLES DEL OESTE*\n\n" +
+                "RONDÍN: " + rondin + "\n" +
+                "FECHA: " + fecha + "\n" +
+                "INGRESO: " + horaIngresoFinal + " \n\n" +
+                "CLIMA: " + clima + " \n\n" +
+                "✨CONTROL DE LA MOTO: \n" +
+                "🔹 Llave: " + llave + " \n" +
+                "🔹 Nivel de aceite: " + aceite + "\n" +
+                "🔹 Nivel de Combustible de la moto: " + combMoto + "\n" +
+                "Bidón : " + bidon + " \n\n" +
+                "🔹 BALIZA AZUL: " + baliza + " \n" +
+                "🔹 Casco: " + casco + " \n" +
+                "🔹 Estado General: " + estGeneral + " \n\n\n" +
+                "✨CONTROL DE ELEMENTOS DE TRABAJO:\n\n" +
+                "🔹 Linterna: " + linterna + " \n" +
+                "  🔋 " + batLinterna + "\n" +
+                "🔹 Handy: " + handy + " \n" +
+                "  🔋 " + batHandy + "\n\n" +
+                "SALIDA: " + textoSalida + "\n" +
+                novedades;
+
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(textoMensaje), '_blank');
+        }
+
+        function generarReporteGuardiaWhatsApp() {
+            const guardia = document.getElementById('gGuardia').value.trim() || "Guardia Puesto 2";
+            const turno = document.getElementById('gTurno').value.trim() || "Mañana";
+            const ingresoPers = document.getElementById('gIngresoPers').value.trim() || "4";
+            const salidaPers = document.getElementById('gSalidaPers').value.trim() || "7";
+            const ingresoVeh = document.getElementById('gIngresoVeh').value.trim() || "101";
+            const salidaVeh = document.getElementById('gSalidaVeh').value.trim() || "128";
+
+            const combMoto = document.getElementById('gMotoCombustible').value.trim() || "Completo";
+            const bidon = document.getElementById('gMotoBidon').value.trim() || "2,5 lts";
+            const linterna1 = document.getElementById('gLinterna1').value.trim() || "Completa";
+            const linterna2 = document.getElementById('gLinterna2').value.trim() || "Completa";
+            const handy1 = document.getElementById('gHandy1').value.trim() || "Completa";
+            const handy2 = document.getElementById('gHandy2').value.trim() || "Completa";
+
+            const selectorNov = document.getElementById('gSelectorNovedades').value;
+            let observacion, motoLlave, motoAceite, motoBaliza, motoCasco, motoEstado;
+            let linternaCant, estadoLinternas, handyCant, estadoHandys;
+            let cabinaLimpieza, caloventor, monitores, pavaElectrica, baterias;
+
+            if (selectorNov === 'no') {
+                observacion = "En orden y funcionando";
+                motoLlave = "si"; motoAceite = "Completo"; motoBaliza = "si"; motoCasco = "si"; motoEstado = "En funcionamiento";
+                linternaCant = "2"; estadoLinternas = "Ambas en funcionamiento"; handyCant = "2"; estadoHandys = "Ambos en funcionamiento";
+                cabinaLimpieza = "Cabina limpia y en orden"; caloventor = "En funcionamiento"; monitores = "Sin novedades";
+                pavaElectrica = "En funcionamiento y sin problemas"; baterias = "2 colocadas - sin conexión";
+            } else {
+                observacion = document.getElementById('gObservacion').value.trim() || "En orden y funcionando";
+                motoLlave = document.getElementById('gMotoLlave').value.trim() || "si";
+                motoAceite = document.getElementById('gMotoAceite').value.trim() || "Completo";
+                motoBaliza = document.getElementById('gMotoBaliza').value.trim() || "si";
+                motoCasco = document.getElementById('gMotoCasco').value.trim() || "si";
+                motoEstado = document.getElementById('gMotoEstado').value.trim() || "En funcionamiento";
+                linternaCant = document.getElementById('gLinternaCant').value.trim() || "2";
+                estadoLinternas = document.getElementById('gEstadoLinternas').value.trim() || "Ambas en funcionamiento";
+                handyCant = document.getElementById('gHandyCant').value.trim() || "2";
+                estadoHandys = document.getElementById('gEstadoHandys').value.trim() || "Ambos en funcionamiento";
+                cabinaLimpieza = document.getElementById('gCabinaLimpieza').value.trim() || "Cabina limpia y en orden";
+                caloventor = document.getElementById('gCaloventor').value.trim() || "En funcionamiento";
+                monitores = document.getElementById('gMonitores').value.trim() || "Sin novedades";
+                pavaElectrica = document.getElementById('gPava').value.trim() || "En funcionamiento y sin problemas";
+                baterias = document.getElementById('gBaterias').value.trim() || "2 colocadas - sin conexión";
+
+                const nombreGuardiaKey = guardia.toLowerCase().replace(/\s+/g, '_');
+                const datosNovedad = {
+                    combustibleMoto: combMoto,
+                    bidon: bidon,
+                    linterna1: linterna1,
+                    linterna2: linterna2,
+                    handy1: handy1,
+                    handy2: handy2
+                };
+                localStorage.setItem('bs_parte_' + nombreGuardiaKey, JSON.stringify(datosNovedad));
+            }
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+            const responsableFinal = document.getElementById('gResponsable').value.trim() || guardia;
+
+            const mensaje = "BARRIO SOLES DEL OESTE\n\n" +
+                "Parte del Portero: " + guardia + "\n\n" +
+                "🔘 fecha: " + fecha + "\n\n" +
+                "🔘 turno de: " + turno + "\n\n" +
+                "🔘 INGRESO de personas: " + ingresoPers + "\n" +
+                "🔘 SALIDA de Personas: " + salidaPers + "\n\n" +
+                "🔘 INGRESO de vehículos: " + ingresoVeh + "\n" +
+                "🔘 SALIDA de vehículos: " + salidaVeh + "\n\n" +
+                "🔘 Observación: " + observacion + "\n\n" +
+                "✨ CONTROL DE LA MOTO:\n" +
+                "🔸 Llave : " + motoLlave + "\n" +
+                "🔸 Nivel de aceite: " + motoAceite + "\n" +
+                "🔸 Nivel de Combustible:\n" +
+                "Moto: " + combMoto + "\n" +
+                "Bidón : " + bidon + "\n\n" +
+                "🔸 BALIZA AZUL: " + motoBaliza + "\n" +
+                "🔸 Casco:  " + motoCasco + "\n" +
+                "🔸 Estado General:\n" +
+                motoEstado + "\n\n" +
+                "✨ CONTROL DE ELEMENTOS DE TRABAJO:\n\n" +
+                "🔸 LINTERNA CANTIDAD Y ESTADO: " + linternaCant + "\n" +
+                "🔸 Estado General: " + estadoLinternas + "\n" +
+                "🔋 Puesto: " + linterna1 + "\n" +
+                "🔋 Rondín: " + linterna2 + "\n\n" +
+                "🔸 HANDYS FUNCIONAMIENTO , CANTIDAD Y ESTADO: " + handyCant + "\n" +
+                "🔸 Estado General: " + estadoHandys + "\n" +
+                "🔋 Puesto: " + handy1 + "\n" +
+                "🔋 Rondín: " + handy2 + "\n\n" +
+                "✨ LIMPIEZA Y ESTADO CABINA DE GUARDIA : " + cabinaLimpieza + "\n\n" +
+                "• ✅ *CABINA CON CORRIENTE ELÉCTRICA*\n\n" +
+                "🔸 *CALOVENTOR*\n" + caloventor + "\n\n" +
+                "🔸 *MONITOR/CÁMARAS*\n" + monitores + "\n\n" +
+                "🔸 *PAVA ELÉCTRICA*\n" + pavaElectrica + "\n\n" +
+                "🔸 BATERÍAS: " + baterias + "\n\n" +
+                "🔘 *PORTERO ENTRANTE Y RESPONSABLE QUE HE CONTROLADO TODO EN EL RELEVO Y ME HAGO CARGO:* " + responsableFinal;
+
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensaje), '_blank');
+        }
+    </script>
+</body>
+</html>
