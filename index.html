@@ -149,7 +149,6 @@
         .icon-report { background-color: rgba(0, 184, 148, 0.15); }
         .icon-tools { background-color: rgba(232, 67, 147, 0.15); }
         .icon-profile { background-color: rgba(108, 92, 231, 0.15); }
-        .icon-entertainment { background-color: rgba(253, 203, 110, 0.2); }
 
         .menu-info h3 {
             font-size: 1rem;
@@ -327,88 +326,7 @@
             border-color: var(--header-bg);
         }
 
-        /* Estilos del Tablero de Truco */
-        .truco-table {
-            background: #1e3d2f;
-            border: 3px solid #d4af37;
-            border-radius: 12px;
-            padding: 15px;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        .truco-score {
-            display: flex;
-            justify-content: space-around;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            background: rgba(0,0,0,0.3);
-            padding: 8px;
-            border-radius: 6px;
-        }
-
-        .cards-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 12px 0;
-            min-height: 95px;
-            align-items: center;
-        }
-
-        .truco-card {
-            background: #fff;
-            color: #000;
-            width: 62px;
-            height: 90px;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 6px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            border: 2px solid #ccc;
-            user-select: none;
-        }
-
-        .truco-card:active {
-            transform: translateY(-5px);
-        }
-
-        .truco-card.selected {
-            border: 3px solid #ff4757;
-            transform: translateY(-8px);
-        }
-
-        .truco-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .btn-truco {
-            background-color: #d4af37;
-            color: #121212;
-            border: none;
-            padding: 10px 6px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .btn-truco:active {
-            opacity: 0.8;
-        }
-
-        /* Barra de Navegación Inferior (4 Botones) */
+        /* Barra de Navegación Inferior */
         nav.bottom-nav {
             background-color: var(--nav-bg);
             border-top: 1px solid var(--border-color);
@@ -428,7 +346,7 @@
             color: var(--nav-inactive);
             cursor: pointer;
             flex: 1;
-            font-size: 0.70rem;
+            font-size: 0.75rem;
         }
 
         .nav-item.active {
@@ -437,7 +355,7 @@
         }
 
         .nav-item span.icon {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             margin-bottom: 2px;
         }
 
@@ -459,6 +377,7 @@
             <h1 id="app-title">B.S. Sentir - Puesto 2</h1>
         </div>
         <div class="header-actions">
+            <!-- Botón manual para forzar limpieza de caché y refrescar -->
             <button class="icon-btn" onclick="limpiarCacheYRecargar()" title="Actualizar aplicación">&#8635;</button>
             <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Cambiar Tema">&#127769;</button>
         </div>
@@ -490,14 +409,6 @@
                 <div class="menu-info">
                     <h3>Mi Perfil ("Yo")</h3>
                     <p>Tus datos guardados, control de turnos y aviso de ingreso</p>
-                </div>
-            </div>
-
-            <div class="menu-card" onclick="switchTab('entretenimiento')">
-                <div class="menu-icon icon-entertainment">&#127918;</div>
-                <div class="menu-info">
-                    <h3>Entretenimiento</h3>
-                    <p>Juegos y espacio recreativo para el turno</p>
                 </div>
             </div>
         </div>
@@ -572,8 +483,10 @@
                 <input type="text" id="repEstadoFinal" placeholder="Ej: Sin novedades / Se acompa&ntilde;a al sector">
             </div>
 
+            <!-- Botón para generar vista previa -->
             <button class="btn-action" onclick="mostrarVistaPreviaReporte()">Generar Vista Previa del Mensaje</button>
 
+            <!-- Panel Desplegable de Vista Previa -->
             <div id="panel-vista-previa" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 30px;">
                 <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--header-bg);">&#128065;&#65039; Vista Previa del Mensaje (Listo para WhatsApp):</h3>
                 
@@ -703,24 +616,24 @@
                 <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rond&iacute;n a WhatsApp</button>
             </div>
 
-            <!-- Formulario del Parte del Guardia -->
+            <!-- Formulario del Parte del Guardia Optimizado con Memoria y Responsable Editable -->
             <div id="form-guardia" style="display: none;">
                 <h2 class="section-title">Parte del Portero (Guardias)</h2>
                 
                 <div style="background-color: rgba(74, 144, 226, 0.12); border: 1px solid var(--header-bg); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
                     <p style="font-size: 0.85rem; color: var(--text-color); line-height: 1.4;">
-                        &#8505;&#65039; <b>Aviso de Memoria:</b> Si seleccionas <i>"No"</i> en novedades, el sistema guardará y mantendrá tus datos anteriores de equipos. El campo <b>Responsable</b> es libre y editable.
+                        &#8505;&#65039; <b>Aviso de Memoria:</b> Si seleccionas <i>"No"</i> en novedades, el sistema guardará y mantendrá tus datos anteriores de equipos. El campo <b>Responsable</b> es libre y editable para que el guardia que entrega indique quién queda a cargo.
                     </p>
                 </div>
 
                 <div class="form-group">
                     <label>Nombre del Guardia:</label>
-                    <input type="text" id="gGuardia" placeholder="Ej: Tob&iacute;as biasucci">
+                    <input type="text" id="gGuardia" placeholder="Ej: Tobías biasucci">
                 </div>
 
                 <div class="form-group">
                     <label>Turno de Trabajo:</label>
-                    <input type="text" id="gTurno" placeholder="Ej: Ma&ntilde;ana">
+                    <input type="text" id="gTurno" placeholder="Ej: Mañana">
                 </div>
 
                 <div class="sub-section-title">FLUJO DE ACCESOS</div>
@@ -780,11 +693,12 @@
                 <div class="form-group">
                     <label>&iquest;Hay novedades o anomal&iacute;as en instalaciones/equipos?</label>
                     <select id="gSelectorNovedades" onchange="toggleDetallesNovedadesGuardia()">
-                        <option value="no">No (Mantener mi &uacute;ltima configuraci&oacute;n / Est&aacute;ndar)</option>
-                        <option value="si">S&iacute; (Modificar detalles y equipos)</option>
+                        <option value="no">No (Mantener mi última configuración / Estándar)</option>
+                        <option value="si">Sí (Modificar detalles y equipos)</option>
                     </select>
                 </div>
 
+                <!-- Sección Oculta de Novedades Detalladas -->
                 <div id="seccion-novedades-guardia" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Detalle Extra de Equipos e Instalaciones:</h4>
                     
@@ -848,13 +762,14 @@
 
                     <div class="form-group">
                         <label>Bater&iacute;as:</label>
-                        <input type="text" id="gBaterias" value="2 colocadas - sin conexi&oacute;n">
+                        <input type="text" id="gBaterias" value="2 colocadas - sin conexión">
                     </div>
                 </div>
 
+                <!-- Campo Responsable Libre y Editable -->
                 <div class="form-group" style="margin-top: 15px;">
                     <label>Portero Entrante y Responsable (Editable):</label>
-                    <input type="text" id="gResponsable" placeholder="Ej: Tob&iacute;as biasucci">
+                    <input type="text" id="gResponsable" placeholder="Ej: Tobías biasucci">
                 </div>
 
                 <button class="btn-action" onclick="generarReporteGuardiaWhatsApp()">Enviar Parte a WhatsApp</button>
@@ -892,7 +807,7 @@
 
             <div class="profile-card">
                 <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Turno</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra tu ingreso o salida. Al ingresar, el sistema finaliza autom&aacute;ticamente el turno anterior.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Registra tu ingreso o salida. Al ingresar, el sistema finaliza automáticamente el turno anterior.</p>
                 
                 <div class="form-group">
                     <label>Estado Actual:</label>
@@ -901,6 +816,7 @@
 
                 <button class="btn-action" style="margin-bottom: 10px;" onclick="gestionarTurnoClick()" id="btnFichaje">Iniciar Turno</button>
 
+                <!-- Panel Desplegable para el Relevo -->
                 <div id="panel-relevo-desplegable" style="display: none; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-top: 10px;">
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Datos del Relevo para WhatsApp:</h4>
                     
@@ -939,54 +855,12 @@
                 </div>
 
                 <div id="calendarGridDays" class="calendar-grid">
-                    <!-- Días generados dinámicamente -->
+                    <!-- Días generados por JS -->
                 </div>
 
                 <div style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; text-align: right;">
                     Total mes: <span id="totalHorasMes" style="color: var(--header-bg);">0 hs</span>
                 </div>
-            </div>
-        </div>
-
-        <!-- VISTA 4: ENTRETENIMIENTO -->
-        <div id="view-entretenimiento" class="view">
-            <h2 class="section-title">&#127918; Entretenimiento y Descanso</h2>
-            
-            <div class="menu-card" onclick="abrirTruco()">
-                <div class="menu-icon" style="background-color: rgba(212, 175, 55, 0.2);">&#127139;</div>
-                <div class="menu-info">
-                    <h3>Truco Argentino</h3>
-                    <p>Juega al truco contra la m&aacute;quina (envido, flor, truco y tantos)</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- VISTA 5: JUEGO DE TRUCO -->
-        <div id="view-truco" class="view">
-            <h2 class="section-title">&#127139; Truco Argentino</h2>
-            
-            <div class="truco-table">
-                <div class="truco-score">
-                    <div>Vos: <span id="puntuacionJugador">0</span></div>
-                    <div>M&aacute;quina: <span id="puntuacionMaquina">0</span></div>
-                </div>
-
-                <div style="font-size: 0.85rem; color: #d4af37; margin-bottom: 5px;">Cartas de la Máquina:</div>
-                <div class="cards-container" id="cartasMaquinaContainer"></div>
-
-                <div id="estadoManoTruco" style="font-weight: bold; margin: 10px 0; font-size: 0.95rem; color: #ffeaa7;">
-                    ¡Mano nueva! Juega una carta o canta envido/truco.
-                </div>
-
-                <div style="font-size: 0.85rem; color: #d4af37; margin-bottom: 5px;">Tus Cartas (Toca una para jugar):</div>
-                <div class="cards-container" id="cartasJugadorContainer"></div>
-            </div>
-
-            <div class="truco-actions">
-                <button class="btn-truco" onclick="cantarEnvido()">Envido / Real</button>
-                <button class="btn-truco" onclick="cantarTruco()">¡Truco!</button>
-                <button class="btn-truco" onclick="cantarFaltaEnvido()">Falta Envido</button>
-                <button class="btn-truco" onclick="iniciarJuegoTruco()" style="background-color: #2ed573; color: white;">Nueva Mano</button>
             </div>
         </div>
 
@@ -1006,13 +880,10 @@
             <span class="icon">&#128100;</span>
             <span>Yo</span>
         </button>
-        <button class="nav-item" id="nav-btn-entretenimiento" onclick="switchTab('entretenimiento')">
-            <span class="icon">&#127918;</span>
-            <span>Entretenimiento</span>
-        </button>
     </nav>
 
     <script>
+        // Limpieza profunda al actualizar para evitar datos viejos
         function limpiarCacheYRecargar() {
             localStorage.removeItem('puesto2_pinActual');
             localStorage.removeItem('puesto2_turnoPendienteCierre');
@@ -1021,204 +892,22 @@
                     names.forEach(name => caches.delete(name));
                 });
             }
-            alert("🧹 Caché limpiada. Actualizando aplicación...");
+            alert("🧹 Caché y datos viejos limpiados. Actualizando aplicación...");
             window.location.reload(true);
         }
 
         let fechaActualCalendario = new Date();
         let enTurno = false;
 
-        // --- LÓGICA DEL JUEGO DE TRUCO ARGENTINO ---
-        let mazo = [];
-        let manoJugador = [];
-        let manoMaquina = [];
-        let puntosJugador = 0;
-        let puntosMaquina = 0;
-        let cartaSeleccionadaIndex = null;
-
-        function abrirTruco() {
-            switchTab('truco');
-            iniciarJuegoTruco();
-        }
-
-        function iniciarJuegoTruco() {
-            const palos = ['🗡️', '🪵', '🏆', '🪙'];
-            const valores = [1, 2, 3, 4, 5, 6, 7, 10, 11, 12];
-            mazo = [];
-
-            palos.forEach(palo => {
-                valores.forEach(val => {
-                    let jerarquia = val;
-                    if (val === 1 && palo === '🗡️') jerarquia = 14;
-                    else if (val === 1 && palo === '🪵') jerarquia = 13;
-                    else if (val === 7 && palo === '🗡️') jerarquia = 12;
-                    else if (val === 7 && palo === '🪙') jerarquia = 11;
-                    else if (val === 3) jerarquia = 10;
-                    else if (val === 2) jerarquia = 9;
-                    else if (val === 1) jerarquia = 8;
-                    else if (val === 12) jerarquia = 7;
-                    else if (val === 11) jerarquia = 6;
-                    else if (val === 10) jerarquia = 5;
-                    else if (val === 5) jerarquia = 3;
-                    else if (val === 4) jerarquia = 2;
-                    else if (val === 6) jerarquia = 1;
-
-                    let valEnvido = (val >= 10) ? 0 : val;
-                    mazo.push({ valor: val, palo: palo, jerarquia: jerarquia, envido: valEnvido });
-                });
-            });
-
-            mazo.sort(() => Math.random() - 0.5);
-            manoJugador = mazo.splice(0, 3);
-            manoMaquina = mazo.splice(0, 3);
-            cartaSeleccionadaIndex = null;
-
-            document.getElementById('estadoManoTruco').textContent = "¡Mano nueva! Juega una carta o canta envido/truco.";
-            renderizarMesaTruco();
-        }
-
-        function renderizarMesaTruco() {
-            document.getElementById('puntuacionJugador').textContent = puntosJugador;
-            document.getElementById('puntuacionMaquina').textContent = puntosMaquina;
-
-            const maqContainer = document.getElementById('cartasMaquinaContainer');
-            maqContainer.innerHTML = '';
-            manoMaquina.forEach(() => {
-                const cartaDiv = document.createElement('div');
-                cartaDiv.className = 'truco-card';
-                cartaDiv.style.background = '#2c3e50';
-                cartaDiv.style.color = '#fff';
-                cartaDiv.style.justifyContent = 'center';
-                cartaDiv.style.alignItems = 'center';
-                cartaDiv.innerHTML = '🎴';
-                maqContainer.appendChild(cartaDiv);
-            });
-
-            const jugContainer = document.getElementById('cartasJugadorContainer');
-            jugContainer.innerHTML = '';
-            manoJugador.forEach((carta, index) => {
-                const cartaDiv = document.createElement('div');
-                cartaDiv.className = `truco-card ${cartaSeleccionadaIndex === index ? 'selected' : ''}`;
-                cartaDiv.innerHTML = `<span>${carta.valor} ${carta.palo}</span><span style="font-size:1.3rem; text-align:center;">${carta.palo}</span><span style="text-align:right;">${carta.valor} ${carta.palo}</span>`;
-                cartaDiv.onclick = () => seleccionarCartaJugador(index);
-                jugContainer.appendChild(cartaDiv);
-            });
-        }
-
-        function seleccionarCartaJugador(index) {
-            cartaSeleccionadaIndex = index;
-            renderizarMesaTruco();
-
-            setTimeout(() => {
-                jugarManoRonda(index);
-            }, 300);
-        }
-
-        function jugarManoRonda(indexJugador) {
-            const cartaJ = manoJugador.splice(indexJugador, 1)[0];
-            const indexMaq = Math.floor(Math.random() * manoMaquina.length);
-            const cartaM = manoMaquina.splice(indexMaq, 1)[0];
-
-            let resultadoMano = "";
-            if (cartaJ.jerarquia > cartaM.jerarquia) {
-                resultadoMano = `🎉 ¡Ganaste la mano con ${cartaJ.valor} ${cartaJ.palo} contra ${cartaM.valor} ${cartaM.palo}!`;
-                puntosJugador += 1;
-            } else if (cartaJ.jerarquia < cartaM.jerarquia) {
-                resultadoMano = `🤖 La máquina ganó la mano con ${cartaM.valor} ${cartaM.palo} contra ${cartaJ.valor} ${cartaJ.palo}.`;
-                puntosMaquina += 1;
-            } else {
-                resultadoMano = `🤝 ¡Parda en esta mano!`;
-            }
-
-            document.getElementById('estadoManoTruco').textContent = resultadoMano;
-            cartaSeleccionadaIndex = null;
-            renderizarMesaTruco();
-
-            if (puntosJugador >= 15 || puntosMaquina >= 15 || manoJugador.length === 0) {
-                setTimeout(() => {
-                    if (puntosJugador >= 15) alert("🏆 ¡Felicitaciones! Ganaste la partida de Truco.");
-                    else if (puntosMaquina >= 15) alert("🤖 La máquina ganó la partida. ¡Inténtalo de nuevo!");
-                    else {
-                        alert("Mano finalizada. ¡Iniciando siguiente ronda!");
-                        iniciarJuegoTruco();
-                        return;
-                    }
-                    puntosJugador = 0;
-                    puntosMaquina = 0;
-                    iniciarJuegoTruco();
-                }, 1500);
-            }
-        }
-
-        function cantarEnvido() {
-            let maxEnvidoJugador = calcularTantoEnvido(manoJugador);
-            let maxEnvidoMaquina = calcularTantoEnvido(manoMaquina);
-
-            if (maxEnvidoJugador >= maxEnvidoMaquina) {
-                puntosJugador += 2;
-                alert(`📢 ¡Cantaste Envido!\nTus tantos: ${maxEnvidoJugador} | La máquina: ${maxEnvidoMaquina}\n¡Ganaste el envido (+2 puntos)!`);
-            } else {
-                puntosMaquina += 2;
-                alert(`📢 ¡Cantaste Envido!\nTus tantos: ${maxEnvidoJugador} | La máquina: ${maxEnvidoMaquina}\nLa máquina ganó el envido (+2 puntos).`);
-            }
-            renderizarMesaTruco();
-        }
-
-        function cantarFaltaEnvido() {
-            let maxEnvidoJugador = calcularTantoEnvido(manoJugador);
-            let maxEnvidoMaquina = calcularTantoEnvido(manoMaquina);
-
-            if (maxEnvidoJugador >= maxEnvidoMaquina) {
-                puntosJugador = 15;
-                alert(`📢 ¡Cantaste Falta Envido!\nTus tantos: ${maxEnvidoJugador} | La máquina: ${maxEnvidoMaquina}\n¡Ganaste la partida!`);
-            } else {
-                puntosMaquina = 15;
-                alert(`📢 ¡Cantaste Falta Envido!\nTus tantos: ${maxEnvidoJugador} | La máquina: ${maxEnvidoMaquina}\nLa máquina ganó la partida.`);
-            }
-            renderizarMesaTruco();
-        }
-
-        function calcularTantoEnvido(mano) {
-            let palosMap = {};
-            mano.forEach(c => {
-                if (!palosMap[c.palo]) palosMap[c.palo] = [];
-                palosMap[c.palo].push(c.envido);
-            });
-
-            let mayorTanto = 0;
-            for (let palo in palosMap) {
-                let valoresPalo = palosMap[palo];
-                if (valoresPalo.length >= 2) {
-                    valoresPalo.sort((a, b) => b - a);
-                    let tanto = 20 + valoresPalo[0] + valoresPalo[1];
-                    if (tanto > mayorTanto) mayorTanto = tanto;
-                } else {
-                    if (valoresPalo[0] > mayorTanto) mayorTanto = valoresPalo[0];
-                }
-            }
-            return mayorTanto;
-        }
-
-        function cantarTruco() {
-            if (Math.random() > 0.4) {
-                puntosJugador += 2;
-                alert("📢 ¡Cantaste Truco!\nLa máquina aceptó: ¡Ganaste 2 puntos!");
-            } else {
-                puntosMaquina += 1;
-                alert("📢 ¡Cantaste Truco!\nLa máquina no quiso: Ganaste 1 punto.");
-            }
-            renderizarMesaTruco();
-        }
-
-        // --- FUNCIONES GENERALES DE LA APP ---
         function redactarConIAOffline() {
             const inputDetalle = document.getElementById('repDetalle');
             const textoCrudo = inputDetalle.value.trim();
             if (!textoCrudo) {
-                alert("Escribe palabras clave primero.");
+                alert("Escribe palabras clave primero (ej: 'perro suelto').");
                 return;
             }
-            inputDetalle.value = "Se constata y registra situación en el sector: " + textoCrudo + ". Personal de guardia procede a realizar control preventivo.";
+            let textoFormateado = "Se constata y registra situación en el sector: " + textoCrudo + ". Personal de guardia procede a realizar control preventivo.";
+            inputDetalle.value = textoFormateado;
         }
 
         function redactarConIAOnline() {
@@ -1310,6 +999,7 @@
             }
         }
 
+        // --- GESTIÓN DE TURNO Y CIERRE AUTOMÁTICO DE RELEVO ---
         function gestionarTurnoClick() {
             const turnoActivo = localStorage.getItem('puesto2_turnoActivo');
             const panel = document.getElementById('panel-relevo-desplegable');
@@ -1362,10 +1052,12 @@
                 return;
             }
 
+            // CIERRE AUTOMÁTICO DEL TURNO ANTERIOR AL HACER EL RELEVO (TRABAJÓ SUS 8 HS Y ENTRA EL NUEVO)
             cerrarTurnoActualGuardado();
 
             enTurno = true;
-            localStorage.setItem('bs_turno_inicio', Date.now());
+            const ahoraMs = Date.now();
+            localStorage.setItem('bs_turno_inicio', ahoraMs);
             localStorage.setItem('puesto2_horaInicio', new Date().toISOString());
             localStorage.setItem('puesto2_turnoActivo', 'true');
 
@@ -1378,17 +1070,19 @@
             const fecha = ahora.toLocaleDateString();
             const horas = String(ahora.getHours()).padStart(2, '0');
             const minutos = String(ahora.getMinutes()).padStart(2, '0');
+            const hora24 = `${horas}:${minutos}`;
 
             const mensaje = "*BARRIO SOLES DEL OESTE*\n\n" +
                 "🚗 *AVISO DE INGRESO Y RELEVO*\n\n" +
                 "📅 Fecha: " + fecha + "\n" +
-                "⏰ Hora de llegada: " + horas + ":" + minutos + "\n" +
+                "⏰ Hora de llegada: " + hora24 + "\n" +
                 "👤 Ingresa: " + nombre + "\n" +
                 "🔄 Releva a: " + companero + "\n" +
                 "📍 Turno: " + turno + "\n\n" +
                 "✅ _Ingresando al puesto para iniciar funciones._";
 
-            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensaje), '_blank');
+            const urlWhatsApp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(mensaje);
+            window.open(urlWhatsApp, '_blank');
         }
 
         function cambiarMes(dir) {
@@ -1491,13 +1185,6 @@
                     document.getElementById('view-perfil').classList.add('active');
                     document.getElementById('nav-btn-perfil').classList.add('active');
                     backIcon.style.display = 'none';
-                } else if (tabName === 'entretenimiento') {
-                    document.getElementById('view-entretenimiento').classList.add('active');
-                    document.getElementById('nav-btn-entretenimiento').classList.add('active');
-                    backIcon.style.display = 'none';
-                } else if (tabName === 'truco') {
-                    document.getElementById('view-truco').classList.add('active');
-                    document.getElementById('nav-btn-entretenimiento').classList.add('active');
                 }
             }
             document.getElementById('mainContent').scrollTo(0, 0);
@@ -1630,6 +1317,7 @@
                 pavaElectrica = document.getElementById('gPava').value.trim() || "En funcionamiento y sin problemas";
                 baterias = document.getElementById('gBaterias').value.trim() || "2 colocadas - sin conexión";
 
+                // Guardar la configuración de novedades personalizada si se modificó
                 const nombreGuardiaKey = guardia.toLowerCase().replace(/\s+/g, '_');
                 const datosNovedad = {
                     combustibleMoto: combMoto,
@@ -1644,6 +1332,8 @@
 
             const ahora = new Date();
             const fecha = ahora.toLocaleDateString();
+
+            // El responsable toma exactamente lo que el guardia escriba en la casilla editable
             const responsableFinal = document.getElementById('gResponsable').value.trim() || guardia;
 
             const mensaje = "BARRIO SOLES DEL OESTE\n\n" +
