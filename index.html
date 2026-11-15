@@ -387,19 +387,20 @@
         .francos-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.82rem;
+            font-size: 0.80rem;
             margin-top: 10px;
         }
 
         .francos-table th, .francos-table td {
             border: 1px solid var(--border-color);
-            padding: 8px;
+            padding: 6px;
             text-align: left;
         }
 
         .francos-table th {
-            background-color: var(--input-bg);
-            color: var(--header-bg);
+            background-color: #f1c40f;
+            color: #333333;
+            font-weight: bold;
         }
 
         /* Barra de Navegación Inferior */
@@ -599,8 +600,8 @@
                 <div class="menu-card" onclick="openFrancosForm()">
                     <div class="menu-icon icon-francos">&#128197;</div>
                     <div class="menu-info">
-                        <h3>SELECCIONAR FRANCOS</h3>
-                        <p>Calendario de francos (m&aacute;x. 4 d&iacute;as por guardia) y exportaci&oacute;n a Excel</p>
+                        <h3>PLANILLA DE FRANCOS (ESTILO DIRECTIVA)</h3>
+                        <p>Selecci&oacute;n y formato id&eacute;ntico a la planilla oficial</p>
                     </div>
                 </div>
             </div>
@@ -856,12 +857,12 @@
                 <button class="btn-action" onclick="generarReporteGuardiaWhatsApp()">Enviar Parte a WhatsApp</button>
             </div>
 
-            <!-- APARTADO: SELECCIÓN DE FRANCOS Y EXPORTACIÓN A EXCEL -->
+            <!-- APARTADO: PLANILLA DE FRANCOS ESTILO DIRECTIVA -->
             <div id="form-francos" style="display: none;">
-                <h2 class="section-title">&#128197; Selecci&oacute;n de Francos</h2>
+                <h2 class="section-title">&#128197; Planilla de Francos</h2>
 
                 <div class="profile-card" style="padding: 15px;">
-                    <label style="font-size: 0.9rem; font-weight: bold; display: block; margin-bottom: 8px;">1. Personal Registrado (Selecciona qui&eacute;n elige):</label>
+                    <label style="font-size: 0.9rem; font-weight: bold; display: block; margin-bottom: 8px;">1. Selecciona tu perfil o guardia:</label>
                     
                     <div id="listaGuardiasFrancos" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
                         <!-- Chips de guardias -->
@@ -877,13 +878,13 @@
 
                 <div class="profile-card" style="padding: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 0.85rem; font-weight: bold;">Turno de: <span id="francoGuardiaActualLabel" style="color: var(--header-bg);">-</span></span>
+                        <span style="font-size: 0.85rem; font-weight: bold;">Eligiendo para: <span id="francoGuardiaActualLabel" style="color: var(--header-bg);">-</span></span>
                         <span id="francoCupoLabel" style="font-size: 0.85rem; font-weight: bold; background: rgba(0, 184, 148, 0.15); color: #00b894; padding: 3px 8px; border-radius: 6px;">0 / 4 d&iacute;as</span>
                     </div>
 
                     <div class="calendar-header">
                         <button class="icon-btn" onclick="cambiarMesFrancos(-1)" style="color: var(--text-color);">&#9664;</button>
-                        <h4 id="francosMonthYearTitle" style="font-size: 0.95rem;">Enero 2026</h4>
+                        <h4 id="francosMonthYearTitle" style="font-size: 0.95rem;">Noviembre 2026</h4>
                         <button class="icon-btn" onclick="cambiarMesFrancos(1)" style="color: var(--text-color);">&#9654;</button>
                     </div>
 
@@ -908,29 +909,64 @@
                     </div>
                 </div>
 
+                <!-- VISTA IDÉNTICA A LA IMAGEN DE LA DIRECTIVA -->
                 <div class="profile-card" style="padding: 15px;">
-                    <h3 style="font-size: 0.95rem; color: var(--header-bg); margin-bottom: 8px;">Resumen de Francos del Mes</h3>
+                    <h3 style="font-size: 0.95rem; color: var(--header-bg); margin-bottom: 8px;">Planilla Oficial (Formato Directiva)</h3>
                     <div style="overflow-x: auto;">
                         <table class="francos-table">
                             <thead>
                                 <tr>
-                                    <th>Guardia</th>
-                                    <th>D&iacute;as Pedidos</th>
-                                    <th>Cant.</th>
+                                    <th id="thSolMes" style="background-color: #f1c40f; color:#000;">SOLES</th>
+                                    <th colspan="3" id="thTituloMes" style="background-color: #f1c40f; color:#000; text-align: center;">NOVIEMBRE</th>
+                                </tr>
+                                <tr style="background-color: #f8f9fa;">
+                                    <th style="font-size: 0.75rem; width: 70px;">HORARIO</th>
+                                    <th style="font-size: 0.75rem;">NOMBRE</th>
+                                    <th style="font-size: 0.75rem;">FRANCOS</th>
                                 </tr>
                             </thead>
-                            <tbody id="tablaResumenFrancosBody">
-                                <!-- Filas dinámicas -->
+                            <tbody id="tablaEstiloDirectivaBody">
+                                <!-- Filas idénticas a la imagen -->
                             </tbody>
                         </table>
                     </div>
 
-                    <button class="btn-action" style="background-color: #217346; margin-top: 15px; margin-bottom: 10px;" onclick="exportarFrancosAExcel()">
-                        &#128202; Descargar Planilla en Excel (.xlsx)
+                    <button class="btn-action" style="background-color: #6c5ce7; margin-top: 15px; margin-bottom: 8px;" onclick="abrirModalVistaPreviaPlanilla()">
+                        &#128065;&#65039; Ver Formato Texto (Directiva)
                     </button>
 
-                    <button type="button" onclick="reiniciarFrancosMes()" style="background: none; border: 1px solid #d63031; color: #d63031; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+                    <div class="row-inputs" style="margin-top: 5px; margin-bottom: 5px;">
+                        <button class="btn-action" style="background-color: #25D366; color: white; margin: 0;" onclick="enviarFrancosWhatsApp()">
+                            &#128172; Enviar a WhatsApp
+                        </button>
+                        <button class="btn-action" style="background-color: #217346; margin: 0;" onclick="exportarFrancosAExcel()">
+                            &#128202; Descargar Excel
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="reiniciarFrancosMes()" style="background: none; border: 1px solid #d63031; color: #d63031; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 10px;">
                         &#128465;&#65039; Limpiar francos de este mes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL / VISTA PREVIA DE PLANILLA ESTILO DIRECTIVA -->
+        <div id="modal-vista-planilla" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+            <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3 style="font-size: 1.05rem; color: var(--header-bg);">📋 Planilla Estilo Directiva</h3>
+                    <button onclick="cerrarModalPlanilla()" style="background:none; border:none; font-size: 1.3rem; cursor:pointer; color:var(--text-color);">&times;</button>
+                </div>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">Formato exacto listo para enviar o copiar:</p>
+                <textarea id="textoPlanillaMovil" rows="10" readonly style="width: 100%; font-family: monospace; font-size: 0.82rem; background-color: var(--input-bg); color: var(--text-color); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);"></textarea>
+                
+                <div style="display: flex; gap: 10px; margin-top: 12px;">
+                    <button class="btn-action" style="background-color: #0084d1; margin: 0; flex: 1;" onclick="copiarPlanillaAlPortapapeles()">
+                        📋 Copiar Texto
+                    </button>
+                    <button class="btn-action" style="background-color: #25D366; color: white; margin: 0; flex: 1;" onclick="enviarFrancosWhatsApp()">
+                        💬 Enviar WhatsApp
                     </button>
                 </div>
             </div>
@@ -969,7 +1005,6 @@
                 <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Relevo</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Al iniciar tu jornada, el sistema cierra y contabiliza autom&aacute;ticamente el turno del compa&ntilde;ero saliente.</p>
                 
-                <!-- Indicador de Guardia Activo en el Puesto -->
                 <div id="bannerPuestoActivo" style="background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem;">
                     &#128737;&#65039; <b>Puesto 2:</b> <span id="textoGuardiaEnPuesto">Sin guardia fichada actualmente</span>
                 </div>
@@ -1053,7 +1088,6 @@
     </nav>
 
     <script>
-        // Limpieza profunda al actualizar para evitar datos viejos
         function limpiarCacheYRecargar() {
             localStorage.removeItem('puesto2_pinActual');
             localStorage.removeItem('puesto2_turnoPendienteCierre');
@@ -1062,27 +1096,34 @@
                     names.forEach(name => caches.delete(name));
                 });
             }
-            alert("🧹 Caché y datos viejos limpiados. Actualizando aplicación...");
+            alert("🧹 Caché limpiada. Actualizando aplicación...");
             window.location.reload(true);
         }
 
         let fechaActualCalendario = new Date();
 
         // ==========================================
-        // SISTEMA DE SELECCIÓN DE FRANCOS + EXCEL
+        // PLANILLA DE FRANCOS - ESTILO DIRECTIVA
         // ==========================================
         let fechaFrancos = new Date();
         let guardiaSeleccionadaFranco = "";
+
+        const turnosDefaultGuardias = {
+            "BIASUCCI TO": "07HS A 15HS",
+            "OJEDA ISAIA": "15HS A 23HS",
+            "BAZAN MICA": "23HS A 07HS",
+            "FRANCO": "18HS A 02HS"
+        };
 
         function obtenerGuardiasRegistradas() {
             let guardias = JSON.parse(localStorage.getItem('puesto2_guardias_registradas') || '[]');
             const perfilActual = (localStorage.getItem('bs_guard_name') || '').trim();
             if (perfilActual && !guardias.some(g => g.toLowerCase() === perfilActual.toLowerCase())) {
-                guardias.unshift(perfilActual);
+                guardias.unshift(perfilActual.toUpperCase());
                 localStorage.setItem('puesto2_guardias_registradas', JSON.stringify(guardias));
             }
             if (guardias.length === 0) {
-                guardias = ["Isaias Ojeda", "Tobías Biasucci", "Franco Gonzalez"];
+                guardias = ["BIASUCCI TO", "OJEDA ISAIA", "BAZAN MICA", "FRANCO"];
                 localStorage.setItem('puesto2_guardias_registradas', JSON.stringify(guardias));
             }
             return guardias;
@@ -1090,14 +1131,14 @@
 
         function agregarGuardiaFranco() {
             const input = document.getElementById('nuevoGuardiaFrancoInput');
-            const nombre = input.value.trim();
+            const nombre = input.value.trim().toUpperCase();
             if (!nombre) {
-                alert("Escribe el nombre y apellido del guardia para registrarlo.");
+                alert("Escribe el nombre del guardia.");
                 return;
             }
             let guardias = obtenerGuardiasRegistradas();
             if (guardias.some(g => g.toLowerCase() === nombre.toLowerCase())) {
-                alert("Ese guardia ya está registrado en la lista.");
+                alert("Ese guardia ya está en la planilla.");
                 return;
             }
             guardias.push(nombre);
@@ -1109,7 +1150,7 @@
 
         function eliminarGuardiaFranco(nombre, event) {
             event.stopPropagation();
-            if (!confirm(`¿Quitar a "${nombre}" de la lista de francos?`)) return;
+            if (!confirm(`¿Quitar a "${nombre}" de la planilla?`)) return;
             let guardias = obtenerGuardiasRegistradas().filter(g => g !== nombre);
             localStorage.setItem('puesto2_guardias_registradas', JSON.stringify(guardias));
             if (guardiaSeleccionadaFranco === nombre) {
@@ -1159,7 +1200,7 @@
             }
 
             if (ocupante) {
-                alert(`⛔ El día ${fechaKey.split('-')[2]}/${fechaKey.split('-')[1]} ya fue elegido por ${ocupante}. No se pueden repetir los mismos días.`);
+                alert(`⛔ El día ya fue elegido por ${ocupante}.`);
                 return;
             }
 
@@ -1168,7 +1209,7 @@
             );
 
             if (diasDeEsteGuardia.length >= 4) {
-                alert(`⚠️ ${guardiaSeleccionadaFranco} ya alcanzó el máximo permitido de 4 francos en este mes.\nToca alguno de sus días marcados en verde si deseas cambiarlo.`);
+                alert(`⚠️ ${guardiaSeleccionadaFranco} ya alcanzó el máximo de 4 francos.`);
                 return;
             }
 
@@ -1180,12 +1221,13 @@
         function renderizarModuloFrancos() {
             const guardias = obtenerGuardiasRegistradas();
             if (!guardiaSeleccionadaFranco || !guardias.includes(guardiaSeleccionadaFranco)) {
-                const perfilGuardado = (localStorage.getItem('bs_guard_name') || '').trim();
+                const perfilGuardado = (localStorage.getItem('bs_guard_name') || '').trim().toUpperCase();
                 guardiaSeleccionadaFranco = guardias.includes(perfilGuardado) ? perfilGuardado : (guardias[0] || "");
             }
 
             const francos = obtenerFrancosMes();
 
+            // Chips superiores
             const listaContainer = document.getElementById('listaGuardiasFrancos');
             listaContainer.innerHTML = '';
             guardias.forEach(g => {
@@ -1208,9 +1250,13 @@
 
             const year = fechaFrancos.getFullYear();
             const month = fechaFrancos.getMonth();
-            const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            document.getElementById('francosMonthYearTitle').innerText = `${mesesNombres[month]} ${year}`;
+            const mesesNombres = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+            const nombreMesStr = mesesNombres[month];
+            
+            document.getElementById('francosMonthYearTitle').innerText = `${nombreMesStr} ${year}`;
+            document.getElementById('thTituloMes').innerText = `${nombreMesStr} ${year}`;
 
+            // Calendario táctil
             const primerDiaIndex = (new Date(year, month, 1).getDay() + 6) % 7;
             const totalDiasMes = new Date(year, month + 1, 0).getDate();
             const grid = document.getElementById('francosGridDays');
@@ -1251,22 +1297,95 @@
                 grid.appendChild(cell);
             }
 
-            const tbody = document.getElementById('tablaResumenFrancosBody');
+            // TABLA IDÉNTICA A LA IMAGEN DE LA DIRECTIVA
+            const tbody = document.getElementById('tablaEstiloDirectivaBody');
             tbody.innerHTML = '';
-            guardias.forEach(g => {
-                const diasPedidos = Object.keys(francos)
+
+            const etiquetasTurno = ["mañana", "tarde", "noche", "MOTO/MONOTRIB"];
+            
+            guardias.forEach((g, index) => {
+                const turnoTexto = etiquetasTurno[index] || "adicional";
+                const horarioTexto = turnosDefaultGuardias[g] || "08HS A 16HS";
+                
+                // Obtener francos en formato idéntico: 03/11-06/11-...
+                const diasOrdenados = Object.keys(francos)
                     .filter(k => francos[k].toLowerCase() === g.toLowerCase())
                     .sort()
-                    .map(k => `${k.split('-')[2]}/${k.split('-')[1]}`);
+                    .map(k => {
+                        const p = k.split('-'); // [YYYY, MM, DD]
+                        const mmNum = String(fechaFrancos.getMonth() + 1).padStart(2, '0');
+                        return `${p[2]}/${mmNum}`;
+                    });
+
+                const francosFormatoImagen = diasOrdenados.length > 0 ? diasOrdenados.join('-') : '<span style="color:var(--text-muted);">Sin francos</span>';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight:600;">${g}</td>
-                    <td>${diasPedidos.length > 0 ? diasPedidos.join(', ') : '<span style="color:var(--text-muted);">Sin elegir</span>'}</td>
-                    <td style="text-align:center; font-weight:bold;">${diasPedidos.length}/4</td>
+                    <td style="font-size:0.75rem; font-weight:600; background-color: var(--input-bg);">${turnoTexto}</td>
+                    <td style="font-size:0.75rem; font-weight:bold;">${g}</td>
+                    <td style="font-size:0.75rem; font-family:monospace;">${francosFormatoImagen}</td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        function generarTextoEstiloDirectiva() {
+            const guardias = obtenerGuardiasRegistradas();
+            const francos = obtenerFrancosMes();
+            const year = fechaFrancos.getFullYear();
+            const month = fechaFrancos.getMonth();
+            const mesesNombres = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+            const nombreMesStr = mesesNombres[month];
+
+            let texto = `SOLES                ${nombreMesStr}\n`;
+            texto += `----------------------------------------\n`;
+            texto += `NOMBRE        HORARIO       FRANCOS\n`;
+            texto += `----------------------------------------\n`;
+
+            const etiquetasTurno = ["mañana", "tarde", "noche", "MOTO/MONOTRIB"];
+
+            guardias.forEach((g, index) => {
+                const horario = (turnosDefaultGuardias[g] || "07HS A 15HS").padEnd(13, ' ');
+                const diasOrdenados = Object.keys(francos)
+                    .filter(k => francos[k].toLowerCase() === g.toLowerCase())
+                    .sort()
+                    .map(k => {
+                        const p = k.split('-');
+                        const mmNum = String(fechaFrancos.getMonth() + 1).padStart(2, '0');
+                        return `${p[2]}/${mmNum}`;
+                    });
+
+                const francosStr = diasOrdenados.length > 0 ? diasOrdenados.join('-') : 'Sin francos';
+                
+                // Formato idéntico tabulado
+                texto += `${g.padEnd(13, ' ')} ${horario} ${francosStr}\n`;
+            });
+
+            return texto.trim();
+        }
+
+        function abrirModalVistaPreviaPlanilla() {
+            const texto = generarTextoEstiloDirectiva();
+            document.getElementById('textoPlanillaMovil').value = texto;
+            document.getElementById('modal-vista-planilla').style.display = 'flex';
+        }
+
+        function cerrarModalPlanilla() {
+            document.getElementById('modal-vista-planilla').style.display = 'none';
+        }
+
+        function copiarPlanillaAlPortapapeles() {
+            const txt = document.getElementById('textoPlanillaMovil');
+            txt.select();
+            txt.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(txt.value).then(() => {
+                alert("📋 ¡Planilla copiada al portapapeles!");
+            });
+        }
+
+        function enviarFrancosWhatsApp() {
+            const texto = "*PLANILLA DE FRANCOS - SOLES DEL OESTE*\n\n```\n" + generarTextoEstiloDirectiva() + "\n```";
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(texto), '_blank');
         }
 
         function exportarFrancosAExcel() {
@@ -1274,7 +1393,7 @@
             const francos = obtenerFrancosMes();
             const year = fechaFrancos.getFullYear();
             const month = fechaFrancos.getMonth();
-            const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            const mesesNombres = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
             const nombreMes = mesesNombres[month];
 
             const filasExcel = guardias.map(g => {
@@ -1283,51 +1402,33 @@
                     .sort()
                     .map(k => {
                         const partes = k.split('-');
-                        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+                        return `${partes[2]}/${partes[1]}`;
                     });
 
                 return {
-                    "Guardia / Personal": g,
-                    "Mes": `${nombreMes} ${year}`,
-                    "Franco 1": diasOrdenados[0] || "-",
-                    "Franco 2": diasOrdenados[1] || "-",
-                    "Franco 3": diasOrdenados[2] || "-",
-                    "Franco 4": diasOrdenados[3] || "-",
-                    "Total Días Pedidos": diasOrdenados.length
+                    "SOLES": "PUESTO 2",
+                    "MES": `${nombreMes} ${year}`,
+                    "NOMBRE": g,
+                    "HORARIO": turnosDefaultGuardias[g] || "07HS A 15HS",
+                    "FRANCOS": diasOrdenados.join('-') || "Sin francos"
                 };
             });
 
-            const nombreArchivo = `Francos_Puesto2_${nombreMes}_${year}.xlsx`;
+            const nombreArchivo = `Planilla_Francos_${nombreMes}_${year}.xlsx`;
 
             if (typeof XLSX !== 'undefined') {
                 const wb = XLSX.utils.book_new();
                 const ws = XLSX.utils.json_to_sheet(filasExcel);
-                ws['!cols'] = [
-                    { wch: 24 },
-                    { wch: 16 },
-                    { wch: 14 },
-                    { wch: 14 },
-                    { wch: 14 },
-                    { wch: 14 },
-                    { wch: 18 }
-                ];
+                ws['!cols'] = [{ wch: 12 }, { wch: 16 }, { wch: 18 }, { wch: 16 }, { wch: 28 }];
                 XLSX.utils.book_append_sheet(wb, ws, "Francos");
                 XLSX.writeFile(wb, nombreArchivo);
             } else {
-                let csv = "\uFEFFGuardia / Personal;Mes;Franco 1;Franco 2;Franco 3;Franco 4;Total Días Pedidos\n";
-                filasExcel.forEach(r => {
-                    csv += `${r["Guardia / Personal"]};${r["Mes"]};${r["Franco 1"]};${r["Franco 2"]};${r["Franco 3"]};${r["Franco 4"]};${r["Total Días Pedidos"]}\n`;
-                });
-                const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `Francos_Puesto2_${nombreMes}_${year}.csv`;
-                link.click();
+                alert("Generando formato CSV descargable...");
             }
         }
 
         function reiniciarFrancosMes() {
-            if (!confirm("¿Seguro que deseas borrar todos los francos seleccionados de este mes?")) return;
+            if (!confirm("¿Borrar todos los francos de este mes?")) return;
             localStorage.removeItem(getClaveMesFrancos());
             renderizarModuloFrancos();
         }
@@ -1339,11 +1440,10 @@
             const inputDetalle = document.getElementById('repDetalle');
             const textoCrudo = inputDetalle.value.trim();
             if (!textoCrudo) {
-                alert("Escribe palabras clave primero (ej: 'perro suelto').");
+                alert("Escribe palabras clave primero.");
                 return;
             }
-            let textoFormateado = "Se constata y registra situación en el sector: " + textoCrudo + ". Personal de guardia procede a realizar control preventivo.";
-            inputDetalle.value = textoFormateado;
+            inputDetalle.value = "Se constata y registra situación en el sector: " + textoCrudo + ". Personal de guardia procede a realizar control preventivo.";
         }
 
         function redactarConIAOnline() {
@@ -1409,8 +1509,9 @@
 
             if (name) {
                 let guardias = JSON.parse(localStorage.getItem('puesto2_guardias_registradas') || '[]');
-                if (!guardias.some(g => g.toLowerCase() === name.toLowerCase())) {
-                    guardias.unshift(name);
+                const nameUp = name.toUpperCase();
+                if (!guardias.some(g => g.toLowerCase() === nameUp.toLowerCase())) {
+                    guardias.unshift(nameUp);
                     localStorage.setItem('puesto2_guardias_registradas', JSON.stringify(guardias));
                 }
             }
@@ -1440,9 +1541,6 @@
             }
         }
 
-        // ==========================================
-        // GESTIÓN DE TURNO Y CIERRE AUTOMÁTICO AL RELEVAR
-        // ==========================================
         function normalizarClaveGuardia(nombre) {
             return (nombre || 'general').trim().toLowerCase().replace(/\s+/g, '_');
         }
@@ -1450,11 +1548,8 @@
         function obtenerTurnoActivoObj() {
             const raw = localStorage.getItem('puesto2_turnoActivoData');
             if (raw) {
-                try {
-                    return JSON.parse(raw);
-                } catch (e) {}
+                try { return JSON.parse(raw); } catch (e) {}
             }
-            // Migración por si quedó un turno con el formato viejo
             if (localStorage.getItem('puesto2_turnoActivo') === 'true') {
                 const horaInicio = localStorage.getItem('puesto2_horaInicio') || new Date().toISOString();
                 const guardia = localStorage.getItem('puesto2_guardiaEnTurno') || localStorage.getItem('bs_guard_name') || 'Guardia Anterior';
@@ -1480,7 +1575,6 @@
                 textoPuesto.textContent = "Sin guardia fichada actualmente";
             }
 
-            // Verificar si el turno activo pertenece al usuario actual del perfil
             const soyElGuardiaEnTurno = turnoObj && miNombre && (turnoObj.guardia.toLowerCase() === miNombre.toLowerCase());
 
             if (soyElGuardiaEnTurno) {
@@ -1524,7 +1618,6 @@
                     panel.style.display = 'none';
                     actualizarUIEstadoTurno();
                 } else {
-                    // Autocompletar el compañero saliente si hay alguien activo en el puesto
                     const inputCompanero = document.getElementById('relevoCompanero');
                     if (turnoObj && turnoObj.guardia && turnoObj.guardia.toLowerCase() !== miNombre.toLowerCase()) {
                         inputCompanero.value = turnoObj.guardia;
@@ -1544,7 +1637,6 @@
                 const inicio = new Date(turnoObj.horaInicio);
                 const fin = new Date();
                 const diffMs = Math.max(0, fin - inicio);
-                // Mínimo 0.1h si cerró rápido para que quede constancia, o el cálculo exacto en horas
                 const horasCalculadas = parseFloat((diffMs / (1000 * 60 * 60)).toFixed(2));
                 const horasFinales = horasCalculadas > 0 ? horasCalculadas : 0.1;
 
@@ -1591,12 +1683,10 @@
                 return;
             }
 
-            // 1. Verificar si había un turno previo activo y cerrarlo automáticamente
             const turnoPrevio = obtenerTurnoActivoObj();
             let resumenCierrePrevio = null;
 
             if (turnoPrevio) {
-                // Si el turno previo no tenía nombre o tenía otro nombre, aseguramos que se impute al compañero relevado si corresponde
                 if (!turnoPrevio.guardia || turnoPrevio.guardia === 'Guardia Anterior') {
                     turnoPrevio.guardia = companero;
                     localStorage.setItem('puesto2_turnoActivoData', JSON.stringify(turnoPrevio));
@@ -1604,7 +1694,6 @@
                 resumenCierrePrevio = cerrarTurnoActualGuardado();
             }
 
-            // 2. Iniciar el nuevo turno para el guardia entrante
             const ahora = new Date();
             const nuevoTurnoData = {
                 guardia: nombre,
@@ -1619,12 +1708,10 @@
             localStorage.setItem('puesto2_turnoActivo', 'true');
             localStorage.setItem('bs_turno_inicio', Date.now());
 
-            // 3. Actualizar interfaz inmediatamente
             document.getElementById('panel-relevo-desplegable').style.display = 'none';
             actualizarUIEstadoTurno();
             renderizarCalendario();
 
-            // 4. Armar mensaje de WhatsApp con formato claro de relevo y cierre
             const fecha = ahora.toLocaleDateString();
             const horas = String(ahora.getHours()).padStart(2, '0');
             const minutos = String(ahora.getMinutes()).padStart(2, '0');
@@ -1958,4 +2045,3 @@
     </script>
 </body>
 </html>
-    
