@@ -57,6 +57,44 @@
             overscroll-behavior: none;
         }
 
+        /* Pantalla de Inicio de Sesión Obligatoria */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            background-color: var(--header-bg);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 12px auto;
+        }
+
         /* Header Superior */
         header {
             background-color: var(--header-bg);
@@ -377,14 +415,15 @@
             font-weight: 600;
             border: 1px solid var(--border-color);
             background-color: var(--input-bg);
-            color: var(--text-color);
-            cursor: pointer;
+            color: var(--text-muted);
+            opacity: 0.75;
         }
 
         .guardia-chip.selected {
             background-color: var(--header-bg);
             color: #ffffff;
             border-color: var(--header-bg);
+            opacity: 1;
         }
 
         .francos-table {
@@ -449,6 +488,31 @@
     </style>
 </head>
 <body data-theme="light">
+
+    <!-- PANTALLA DE INICIO DE SESIÓN OBLIGATORIA -->
+    <div id="login-screen">
+        <div class="login-box">
+            <div class="login-logo">&#128737;&#65039;</div>
+            <h2 style="text-align: center; font-size: 1.25rem; margin-bottom: 4px; color: var(--text-color);">B.S. Sentir - Puesto 2</h2>
+            <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
+                Inicia sesi&oacute;n para proteger tus francos y registros de turno. Tu sesi&oacute;n quedar&aacute; guardada en este dispositivo.
+            </p>
+
+            <div class="form-group">
+                <label>Nombre y Apellido (Guardia):</label>
+                <input type="text" id="loginNombreInput" placeholder="Ej: Isaias Ojeda">
+            </div>
+
+            <div class="form-group">
+                <label>N&uacute;mero de Documento (D.N.I.):</label>
+                <input type="number" id="loginDniInput" placeholder="Ej: 42356789">
+            </div>
+
+            <button class="btn-action" style="margin-bottom: 5px;" onclick="procesarInicioSesion()">
+                Ingresar a la Aplicaci&oacute;n
+            </button>
+        </div>
+    </div>
 
     <!-- Header Superior -->
     <header>
@@ -866,17 +930,16 @@
                 <h2 class="section-title">&#128197; Planilla de Francos</h2>
 
                 <div class="profile-card" style="padding: 15px;">
-                    <label style="font-size: 0.9rem; font-weight: bold; display: block; margin-bottom: 8px;">1. Selecciona tu perfil o guardia:</label>
-                    
-                    <div id="listaGuardiasFrancos" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
-                        <!-- Chips de guardias -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="font-size: 0.9rem; font-weight: bold; margin: 0;">&#128274; Sesi&oacute;n Protegida (Solo tus francos):</label>
+                        <span style="font-size: 0.72rem; color: #00b894; font-weight: bold;">DNI Verificado</span>
                     </div>
-
-                    <div class="row-inputs" style="align-items: flex-end; margin-bottom: 0;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <input type="text" id="nuevoGuardiaFrancoInput" placeholder="Registrar nuevo guardia (Ej: Franco)">
-                        </div>
-                        <button type="button" onclick="agregarGuardiaFranco()" style="background-color: var(--header-bg); color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer;">+ Agregar</button>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
+                        Por seguridad, solo puedes marcar o quitar los francos correspondientes a tu perfil iniciado.
+                    </p>
+                    
+                    <div id="listaGuardiasFrancos" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        <!-- Chips de guardias (solo lectura para los demás) -->
                     </div>
                 </div>
 
@@ -920,7 +983,7 @@
                 <div class="profile-card" style="padding: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <h3 style="font-size: 0.95rem; color: var(--header-bg); margin: 0;">Planilla Oficial (Formato Directiva)</h3>
-                        <span style="font-size: 0.72rem; color: var(--text-muted);">&#128070; Toca la fila de un turno/nombre para cambiarlo</span>
+                        <span style="font-size: 0.72rem; color: var(--text-muted);">&#128070; Toca tu fila para cambiar tu turno</span>
                     </div>
                     
                     <div style="overflow-x: auto;">
@@ -955,8 +1018,8 @@
                         </button>
                     </div>
 
-                    <button type="button" onclick="reiniciarFrancosMes()" style="background: none; border: 1px solid #d63031; color: #d63031; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 10px;">
-                        &#128465;&#65039; Limpiar francos de este mes
+                    <button type="button" onclick="reiniciarMisFrancosMes()" style="background: none; border: 1px solid #d63031; color: #d63031; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 10px;">
+                        &#128465;&#65039; Borrar solo mis francos de este mes
                     </button>
                 </div>
             </div>
@@ -966,7 +1029,7 @@
         <div id="modal-cambiar-turno" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px;">
             <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 400px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="font-size: 1.05rem; color: var(--header-bg);">&#9999;&#65039; Modificar Turno / Horario</h3>
+                    <h3 style="font-size: 1.05rem; color: var(--header-bg);">&#9999;&#65039; Modificar Tu Turno / Horario</h3>
                     <button onclick="cerrarModalTurno()" style="background:none; border:none; font-size: 1.3rem; cursor:pointer; color:var(--text-color);">&times;</button>
                 </div>
                 
@@ -1028,24 +1091,28 @@
                     <div class="profile-avatar">&#128104;&#8205;&#128187;</div>
                     <div class="profile-info">
                         <h3 id="perfilNombreVisual">Guardia del Puesto 2</h3>
-                        <p>Soles del Oeste</p>
+                        <p>Soles del Oeste &bull; Sesi&oacute;n Activa</p>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Nombre y Apellido (Guardia):</label>
-                    <input type="text" id="perfilNombreInput" placeholder="Ej: Isaias Ojeda" oninput="guardarDatosPerfil()">
+                    <input type="text" id="perfilNombreInput" readonly style="background-color: var(--border-color); font-weight: 600;">
                 </div>
 
                 <div class="form-group">
-                    <label>N&uacute;mero de Legajo / DNI:</label>
-                    <input type="text" id="perfilLegajo" placeholder="Ej: 42356789" oninput="guardarDatosPerfil()">
+                    <label>N&uacute;mero de Documento / DNI:</label>
+                    <input type="text" id="perfilLegajo" readonly style="background-color: var(--border-color); font-weight: 600;">
                 </div>
 
                 <div class="form-group">
                     <label>Puesto Asignado:</label>
                     <input type="text" id="perfilPuesto" value="Puesto 2 (Acceso Secundario)" readonly>
                 </div>
+
+                <button type="button" onclick="cerrarSesionGuardia()" style="background: none; border: 1px solid #d63031; color: #d63031; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 5px;">
+                    &#128682; Cerrar Sesi&oacute;n (Cambiar de Guardia)
+                </button>
             </div>
 
             <div class="profile-card">
@@ -1148,6 +1215,7 @@
         let cloudState = {
             servicio: null,
             francos: {},
+            usuarios: {},
             guardias: {
                 "BIASUCCI TO": { turno: "mañana", horario: "07HS A 15HS" },
                 "OJEDA ISAIA": { turno: "tarde", horario: "15HS A 23HS" },
@@ -1163,6 +1231,7 @@
                 if (data.servicio !== undefined) cloudState.servicio = data.servicio;
                 if (data.francos) cloudState.francos = data.francos;
                 if (data.guardias) cloudState.guardias = data.guardias;
+                if (data.usuarios) cloudState.usuarios = data.usuarios;
             }
             document.getElementById('firebase-status').textContent = "En línea (Nube)";
             document.getElementById('firebase-status').style.background = "#00b894";
@@ -1179,6 +1248,108 @@
             }
         }
 
+        // ==========================================
+        // SISTEMA DE INICIO DE SESIÓN Y PROTECCIÓN
+        // ==========================================
+        function obtenerSesionActiva() {
+            const nombre = localStorage.getItem('bs_session_nombre');
+            const dni = localStorage.getItem('bs_session_dni');
+            if (nombre && dni) {
+                return { nombre: nombre.trim(), dni: dni.trim() };
+            }
+            return null;
+        }
+
+        function verificarEstadoSesion() {
+            const sesion = obtenerSesionActiva();
+            const loginScreen = document.getElementById('login-screen');
+
+            if (!sesion) {
+                loginScreen.style.display = 'flex';
+            } else {
+                loginScreen.style.display = 'none';
+                aplicarDatosSesionEnApp(sesion.nombre, sesion.dni);
+            }
+        }
+
+        function procesarInicioSesion() {
+            const nombreInput = document.getElementById('loginNombreInput').value.trim();
+            const dniInput = document.getElementById('loginDniInput').value.trim();
+
+            if (!nombreInput || nombreInput.length < 3) {
+                alert("⚠️ Por favor, ingresa tu Nombre y Apellido completo.");
+                document.getElementById('loginNombreInput').focus();
+                return;
+            }
+
+            if (!dniInput || dniInput.length < 6) {
+                alert("⚠️ Por favor, ingresa un Número de Documento (D.N.I.) válido.");
+                document.getElementById('loginDniInput').focus();
+                return;
+            }
+
+            const nombreUpper = nombreInput.toUpperCase();
+
+            // Verificar si el DNI ya está registrado en la nube con otro nombre
+            if (cloudState.usuarios && cloudState.usuarios[dniInput]) {
+                const usuarioRegistrado = cloudState.usuarios[dniInput];
+                if (usuarioRegistrado.nombre.toUpperCase() !== nombreUpper) {
+                    alert(`⛔ Este D.N.I. (${dniInput}) ya está registrado a nombre de "${usuarioRegistrado.nombre}". Ingresa el nombre exacto con el que te registraste.`);
+                    return;
+                }
+            } else {
+                // Registrar nuevo usuario en Firebase para bloquear su DNI
+                db.ref(`puesto2/usuarios/${dniInput}`).set({
+                    nombre: nombreUpper,
+                    dni: dniInput,
+                    fechaRegistro: new Date().toISOString()
+                });
+            }
+
+            // Asegurar que exista en la lista de guardias de la planilla
+            let guardias = {...cloudState.guardias};
+            if (!guardias[nombreUpper]) {
+                guardias[nombreUpper] = { turno: "mañana", horario: "07HS A 15HS", dni: dniInput };
+                db.ref('puesto2/guardias').set(guardias);
+            } else if (!guardias[nombreUpper].dni) {
+                guardias[nombreUpper].dni = dniInput;
+                db.ref('puesto2/guardias').set(guardias);
+            }
+
+            // Guardar sesión permanente en localStorage
+            localStorage.setItem('bs_session_nombre', nombreInput);
+            localStorage.setItem('bs_session_dni', dniInput);
+            localStorage.setItem('bs_guard_name', nombreInput);
+            localStorage.setItem('bs_guard_legajo', dniInput);
+
+            document.getElementById('login-screen').style.display = 'none';
+            aplicarDatosSesionEnApp(nombreInput, dniInput);
+        }
+
+        function aplicarDatosSesionEnApp(nombre, dni) {
+            document.getElementById('perfilNombreInput').value = nombre;
+            document.getElementById('perfilNombreVisual').textContent = nombre;
+            document.getElementById('perfilLegajo').value = dni;
+
+            const inputGuardiaParte = document.getElementById('gGuardia');
+            const inputResponsable = document.getElementById('gResponsable');
+            if (inputGuardiaParte && !inputGuardiaParte.value) inputGuardiaParte.value = nombre;
+            if (inputResponsable && !inputResponsable.value) inputResponsable.value = nombre;
+
+            cargarPartePorGuardia(nombre);
+            actualizarUIEstadoTurno();
+            renderizarCalendario();
+        }
+
+        function cerrarSesionGuardia() {
+            if (!confirm("¿Deseas cerrar sesión en este dispositivo? Tendrás que ingresar nuevamente tu Nombre y D.N.I. para entrar.")) return;
+            localStorage.removeItem('bs_session_nombre');
+            localStorage.removeItem('bs_session_dni');
+            document.getElementById('loginNombreInput').value = "";
+            document.getElementById('loginDniInput').value = "";
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
         function limpiarCacheYRecargar() {
             if (window.caches) {
                 caches.keys().then(names => {
@@ -1192,10 +1363,9 @@
         let fechaActualCalendario = new Date();
 
         // ==========================================
-        // PLANILLA DE FRANCOS - TURNOS Y HORARIOS
+        // PLANILLA DE FRANCOS - PROTEGIDA POR SESIÓN
         // ==========================================
         let fechaFrancos = new Date();
-        let guardiaSeleccionadaFranco = "";
 
         const horariosPredefinidos = {
             "mañana": "07HS A 15HS",
@@ -1208,46 +1378,35 @@
             return cloudState.guardias || {};
         }
 
-        function agregarGuardiaFranco() {
-            const input = document.getElementById('nuevoGuardiaFrancoInput');
-            const nombre = input.value.trim().toUpperCase();
-            if (!nombre) {
-                alert("Escribe el nombre del guardia.");
-                return;
+        function obtenerMiNombreGuardiaPlanilla() {
+            const sesion = obtenerSesionActiva();
+            if (!sesion) return "";
+            const miNombreUpper = sesion.nombre.toUpperCase();
+            const config = obtenerGuardiasConfig();
+
+            // Buscar coincidencia exacta o por DNI asociado
+            if (config[miNombreUpper]) return miNombreUpper;
+
+            for (const key of Object.keys(config)) {
+                if (config[key].dni && config[key].dni === sesion.dni) {
+                    return key;
+                }
             }
-            let guardias = {...cloudState.guardias};
-            if (guardias[nombre]) {
-                alert("Ese guardia ya está en la planilla.");
-                return;
-            }
-            guardias[nombre] = { turno: "mañana", horario: "07HS A 15HS" };
-            db.ref('puesto2/guardias').set(guardias);
-            guardiaSeleccionadaFranco = nombre;
-            input.value = "";
+            return miNombreUpper;
         }
 
-        function eliminarGuardiaFranco(nombre, event) {
-            event.stopPropagation();
-            if (!confirm(`¿Quitar a "${nombre}" de la planilla?`)) return;
-            let guardias = {...cloudState.guardias};
-            delete guardias[nombre];
-            db.ref('puesto2/guardias').set(guardias);
-            const lista = Object.keys(guardias);
-            if (guardiaSeleccionadaFranco === nombre) {
-                guardiaSeleccionadaFranco = lista[0] || "";
-            }
-        }
-
-        function seleccionarGuardiaFranco(nombre) {
-            guardiaSeleccionadaFranco = nombre;
-            renderizarModuloFrancos();
-        }
-
-        // Modificar turno y horario desde la tabla
+        // Modificar turno y horario desde la tabla (SOLO TU PROPIA FILA)
         let guardiaEditandoTurno = "";
 
         function abrirModalCambiarTurno(nombreGuardia, event) {
             event.stopPropagation();
+            const miGuardia = obtenerMiNombreGuardiaPlanilla();
+
+            if (nombreGuardia.toUpperCase() !== miGuardia.toUpperCase()) {
+                alert(`⛔ No puedes modificar el turno ni el horario de ${nombreGuardia}. Solo puedes editar tus propios datos.`);
+                return;
+            }
+
             guardiaEditandoTurno = nombreGuardia;
             const config = obtenerGuardiasConfig();
             const datos = config[nombreGuardia] || { turno: "mañana", horario: "07HS A 15HS" };
@@ -1311,8 +1470,9 @@
         }
 
         function toggleDiaFranco(fechaKey) {
-            if (!guardiaSeleccionadaFranco) {
-                alert("Primero selecciona o registra un guardia arriba.");
+            const miGuardia = obtenerMiNombreGuardiaPlanilla();
+            if (!miGuardia) {
+                alert("Debes iniciar sesión para seleccionar tus francos.");
                 return;
             }
 
@@ -1320,39 +1480,36 @@
             let francosMes = {...obtenerFrancosMes()};
             const ocupante = francosMes[fechaKey];
 
-            if (ocupante && ocupante.toLowerCase() === guardiaSeleccionadaFranco.toLowerCase()) {
+            // Si es mi propio franco, me permite quitarlo
+            if (ocupante && ocupante.toLowerCase() === miGuardia.toLowerCase()) {
                 delete francosMes[fechaKey];
                 db.ref(`puesto2/francos/${mesKey}`).set(francosMes);
                 return;
             }
 
+            // Si está ocupado por otro guardia, queda estrictamente bloqueado
             if (ocupante) {
-                alert(`⚠️ El día ya fue elegido por ${ocupante}.`);
+                alert(`⛔ El día ya fue elegido por ${ocupante}. No puedes modificar los francos de otro guardia.`);
                 return;
             }
 
             const diasDeEsteGuardia = Object.keys(francosMes).filter(
-                k => francosMes[k].toLowerCase() === guardiaSeleccionadaFranco.toLowerCase()
+                k => francosMes[k].toLowerCase() === miGuardia.toLowerCase()
             );
 
             if (diasDeEsteGuardia.length >= 4) {
-                alert(`⚠️ ${guardiaSeleccionadaFranco} ya alcanzó el máximo de 4 francos.`);
+                alert(`⚠️ ${miGuardia} ya alcanzó el máximo de 4 francos permitidos en el mes.`);
                 return;
             }
 
-            francosMes[fechaKey] = guardiaSeleccionadaFranco;
+            francosMes[fechaKey] = miGuardia;
             db.ref(`puesto2/francos/${mesKey}`).set(francosMes);
         }
 
         function renderizarModuloFrancos() {
             const configGuardias = obtenerGuardiasConfig();
             const guardias = Object.keys(configGuardias);
-
-            if (!guardiaSeleccionadaFranco || !configGuardias[guardiaSeleccionadaFranco]) {
-                const perfilGuardado = (localStorage.getItem('bs_guard_name') || '').trim().toUpperCase();
-                guardiaSeleccionadaFranco = configGuardias[perfilGuardado] ? perfilGuardado : (guardias[0] || "");
-            }
-
+            const miGuardia = obtenerMiNombreGuardiaPlanilla();
             const francos = obtenerFrancosMes();
 
             const ahora = new Date();
@@ -1360,22 +1517,22 @@
             document.getElementById('btnMesAnterior').style.opacity = diffActual <= 0 ? '0.3' : '1';
             document.getElementById('btnMesSiguiente').style.opacity = diffActual >= 1 ? '0.3' : '1';
 
-            // Chips superiores
+            // Chips informativos (solo tu chip está activo)
             const listaContainer = document.getElementById('listaGuardiasFrancos');
             listaContainer.innerHTML = '';
             guardias.forEach(g => {
                 const count = Object.values(francos).filter(owner => owner.toLowerCase() === g.toLowerCase()).length;
+                const esMio = g.toUpperCase() === miGuardia.toUpperCase();
                 const chip = document.createElement('div');
-                chip.className = `guardia-chip ${g === guardiaSeleccionadaFranco ? 'selected' : ''}`;
-                chip.onclick = () => seleccionarGuardiaFranco(g);
-                chip.innerHTML = `<span>${g} (${count}/4)</span><span onclick="eliminarGuardiaFranco('${g.replace(/'/g, "\\'")}', event)" style="opacity:0.75; margin-left:4px;">&times;</span>`;
+                chip.className = `guardia-chip ${esMio ? 'selected' : ''}`;
+                chip.innerHTML = `<span>${esMio ? '🔓 ' : '🔒 '}${g} (${count}/4)</span>`;
                 listaContainer.appendChild(chip);
             });
 
             const countActual = Object.values(francos).filter(
-                owner => owner.toLowerCase() === guardiaSeleccionadaFranco.toLowerCase()
+                owner => owner.toLowerCase() === miGuardia.toLowerCase()
             ).length;
-            document.getElementById('francoGuardiaActualLabel').textContent = guardiaSeleccionadaFranco || "-";
+            document.getElementById('francoGuardiaActualLabel').textContent = miGuardia || "-";
             const cupoEl = document.getElementById('francoCupoLabel');
             cupoEl.textContent = `${countActual} / 4 días`;
             cupoEl.style.color = countActual >= 4 ? '#d63031' : '#00b894';
@@ -1415,7 +1572,7 @@
                 let etiqueta = '';
                 if (ocupante) {
                     const primerNombre = ocupante.split(' ')[0];
-                    if (ocupante.toLowerCase() === guardiaSeleccionadaFranco.toLowerCase()) {
+                    if (ocupante.toLowerCase() === miGuardia.toLowerCase()) {
                         cell.classList.add('mine');
                         etiqueta = `<span class="franco-badge" style="color:#00b894;">${primerNombre}</span>`;
                     } else {
@@ -1436,6 +1593,7 @@
 
             guardias.forEach((g) => {
                 const info = configGuardias[g] || { turno: "mañana", horario: "07HS A 15HS" };
+                const esMio = g.toUpperCase() === miGuardia.toUpperCase();
                 const turnoTexto = info.turno;
                 const nombreYHorario = `${g} <br><span style="font-size:0.7rem; color:var(--header-bg); font-weight:normal;">${info.horario}</span>`;
                 
@@ -1451,8 +1609,8 @@
                 const francosFormatoImagen = diasOrdenados.length > 0 ? diasOrdenados.join('-') : '<span style="color:var(--text-muted);">Sin francos</span>';
 
                 const tr = document.createElement('tr');
-                tr.style.cursor = 'pointer';
-                tr.title = 'Toca para cambiar turno/horario';
+                tr.style.cursor = esMio ? 'pointer' : 'default';
+                tr.title = esMio ? 'Toca para cambiar tu turno/horario' : 'Bloqueado (pertenece a otro guardia)';
                 tr.onclick = (e) => abrirModalCambiarTurno(g, e);
                 tr.innerHTML = `
                     <td style="font-size:0.75rem; font-weight:600; background-color: var(--input-bg);">${turnoTexto}</td>
@@ -1564,10 +1722,21 @@
             }
         }
 
-        function reiniciarFrancosMes() {
-            if (!confirm("¿Borrar todos los francos de este mes?")) return;
+        function reiniciarMisFrancosMes() {
+            const miGuardia = obtenerMiNombreGuardiaPlanilla();
+            if (!miGuardia) return;
+            if (!confirm(`¿Borrar únicamente tus francos (${miGuardia}) de este mes? Los francos de los demás guardias no se tocarán.`)) return;
+            
             const mesKey = getClaveMesFrancos();
-            db.ref(`puesto2/francos/${mesKey}`).set(null);
+            let francosMes = {...obtenerFrancosMes()};
+            
+            Object.keys(francosMes).forEach(fechaKey => {
+                if (francosMes[fechaKey].toLowerCase() === miGuardia.toLowerCase()) {
+                    delete francosMes[fechaKey];
+                }
+            });
+
+            db.ref(`puesto2/francos/${mesKey}`).set(francosMes);
         }
 
         // ==========================================
@@ -1616,50 +1785,8 @@
             document.body.setAttribute('data-theme', savedTheme);
             document.getElementById('theme-btn').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
 
-            const guardName = localStorage.getItem('bs_guard_name');
-            const guardLegajo = localStorage.getItem('bs_guard_legajo');
-
-            if (guardName) {
-                document.getElementById('perfilNombreInput').value = guardName;
-                document.getElementById('perfilNombreVisual').textContent = guardName;
-                const inputGuardiaParte = document.getElementById('gGuardia');
-                const inputResponsable = document.getElementById('gResponsable');
-                if(inputGuardiaParte && !inputGuardiaParte.value) inputGuardiaParte.value = guardName;
-                if(inputResponsable && !inputResponsable.value) inputResponsable.value = guardName;
-                cargarPartePorGuardia(guardName);
-            }
-
-            if (guardLegajo) {
-                document.getElementById('perfilLegajo').value = guardLegajo;
-            }
-
-            actualizarUIEstadoTurno();
-            renderizarCalendario();
+            verificarEstadoSesion();
         });
-
-        function guardarDatosPerfil() {
-            const name = document.getElementById('perfilNombreInput').value.trim();
-            const legajo = document.getElementById('perfilLegajo').value.trim();
-            document.getElementById('perfilNombreVisual').textContent = name || "Guardia del Puesto 2";
-            localStorage.setItem('bs_guard_name', name);
-            localStorage.setItem('bs_guard_legajo', legajo);
-
-            if (name) {
-                let guardias = {...cloudState.guardias};
-                const nameUp = name.toUpperCase();
-                if (!guardias[nameUp]) {
-                    guardias[nameUp] = { turno: "mañana", horario: "07HS A 15HS" };
-                    db.ref('puesto2/guardias').set(guardias);
-                }
-            }
-
-            const inputGuardiaParte = document.getElementById('gGuardia');
-            if(inputGuardiaParte && !inputGuardiaParte.value) inputGuardiaParte.value = name;
-            if(name) cargarPartePorGuardia(name);
-
-            actualizarUIEstadoTurno();
-            renderizarCalendario();
-        }
 
         function cargarPartePorGuardia(nombreGuardia) {
             if (!nombreGuardia) return;
@@ -1688,7 +1815,8 @@
 
         function actualizarUIEstadoTurno() {
             const turnoObj = obtenerTurnoActivoObj();
-            const miNombre = (document.getElementById('perfilNombreInput').value || '').trim();
+            const sesion = obtenerSesionActiva();
+            const miNombre = sesion ? sesion.nombre : '';
             const estadoInput = document.getElementById('perfilEstadoTurno');
             const btnFichaje = document.getElementById('btnFichaje');
             const textoPuesto = document.getElementById('textoGuardiaEnPuesto');
@@ -1726,13 +1854,13 @@
 
         function gestionarTurnoClick() {
             const turnoObj = obtenerTurnoActivoObj();
-            const miNombre = (document.getElementById('perfilNombreInput').value || '').trim();
+            const sesion = obtenerSesionActiva();
+            const miNombre = sesion ? sesion.nombre : '';
             const panel = document.getElementById('panel-relevo-desplegable');
             const btnFichaje = document.getElementById('btnFichaje');
 
             if (!miNombre) {
-                alert("Por favor, ingresa tu Nombre y Apellido primero en 'Mi Perfil'.");
-                switchTab('perfil');
+                verificarEstadoSesion();
                 return;
             }
 
@@ -1782,9 +1910,10 @@
         }
 
         function confirmarInicioTurno() {
-            const nombre = document.getElementById('perfilNombreInput').value.trim();
+            const sesion = obtenerSesionActiva();
+            const nombre = sesion ? sesion.nombre : '';
             if (!nombre) {
-                alert("Por favor, ingresa tu Nombre y Apellido arriba.");
+                verificarEstadoSesion();
                 return;
             }
 
@@ -1844,7 +1973,8 @@
             const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
             document.getElementById('calendarMonthYearTitle').innerText = `${mesesNombres[month]} ${year}`;
 
-            const nombreGuardia = (document.getElementById('perfilNombreInput').value || localStorage.getItem('bs_guard_name') || 'Guardia').trim();
+            const sesion = obtenerSesionActiva();
+            const nombreGuardia = sesion ? sesion.nombre : 'Guardia';
             document.getElementById('calendarioNombreGuardia').innerText = nombreGuardia || "Guardia";
 
             const claveGuardia = normalizarClaveGuardia(nombreGuardia);
