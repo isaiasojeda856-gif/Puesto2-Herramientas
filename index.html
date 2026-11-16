@@ -495,7 +495,7 @@
             <div class="login-logo">&#128737;&#65039;</div>
             <h2 style="text-align: center; font-size: 1.25rem; margin-bottom: 4px; color: var(--text-color);">B.S. Sentir - Puesto 2</h2>
             <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
-                Inicia sesi&oacute;n para proteger tus francos y registros de turno. Tu sesi&oacute;n quedar&aacute; guardada en este dispositivo.
+                Inicia sesión para proteger tus francos y registros de turno. Tu sesión quedará guardada en este dispositivo.
             </p>
 
             <div class="form-group">
@@ -504,12 +504,12 @@
             </div>
 
             <div class="form-group">
-                <label>N&uacute;mero de Documento (D.N.I.):</label>
+                <label>Número de Documento (D.N.I.):</label>
                 <input type="number" id="loginDniInput" placeholder="Ej: 42356789">
             </div>
 
             <button class="btn-action" style="margin-bottom: 5px;" onclick="procesarInicioSesion()">
-                Ingresar a la Aplicaci&oacute;n
+                Ingresar a la Aplicación
             </button>
         </div>
     </div>
@@ -543,8 +543,8 @@
             <div class="menu-card" onclick="switchTab('herramientas')">
                 <div class="menu-icon icon-tools">&#128736;&#65039;</div>
                 <div class="menu-info">
-                    <h3>Herramientas y Gu&iacute;as</h3>
-                    <p>Rond&iacute;n, parte del portero y selecci&oacute;n de francos</p>
+                    <h3>Herramientas y Guías</h3>
+                    <p>Rondín, parte del portero y selección de francos</p>
                 </div>
             </div>
 
@@ -574,11 +574,11 @@
 
             <div class="form-group">
                 <label>Tipo de Incidencia</label>
-                <input type="text" id="repTipoIncidencia" placeholder="Ej: Veh&iacute;culo sospechoso / Animal suelto">
+                <input type="text" id="repTipoIncidencia" placeholder="Ej: Vehículo sospechoso / Animal suelto">
             </div>
 
             <div class="form-group">
-                <label>Detalle o Nota R&aacute;pida (Escribe tus notas informales...)</label>
+                <label>Detalle o Nota Rápida (Escribe tus notas informales...)</label>
                 <textarea id="repDetalle" rows="3" placeholder="Ej: perro suelto mordiendo tachos, asustando vecinos..."></textarea>
                 
                 <div class="ai-buttons-container">
@@ -593,21 +593,21 @@
 
             <div class="form-group">
                 <label>&iquest;Hubo personas involucradas / identificadas?</label>
-                <span style="font-size: 0.75rem; color: #d63031; display: block; margin-bottom: 5px;">&#9888;&#65039; Al seleccionar "S&iacute;", se habilitar&aacute;n los campos obligatorios.</span>
+                <span style="font-size: 0.75rem; color: #d63031; display: block; margin-bottom: 5px;">&#9888;&#65039; Al seleccionar "Sí", se habilitarán los campos obligatorios.</span>
                 <select id="repPersonaCheck" onchange="toggleSeccionPersonas()">
                     <option value="no">No / No aplica</option>
-                    <option value="si">S&iacute;, identificadas</option>
+                    <option value="si">Sí, identificadas</option>
                 </select>
             </div>
 
             <div id="seccion-datos-persona" style="display: none; border-left: 3px solid #0084d1; padding-left: 12px; margin-bottom: 15px;">
                 <div class="form-group">
                     <label>Nombre y Apellido</label>
-                    <input type="text" id="repNombrePersona" placeholder="Ej: Sergio Ram&iacute;rez">
+                    <input type="text" id="repNombrePersona" placeholder="Ej: Sergio Ramírez">
                 </div>
 
                 <div class="form-group">
-                    <label>D.N.I. (N&uacute;mero de Documento)</label>
+                    <label>D.N.I. (Número de Documento)</label>
                     <input type="text" id="repDniPersona" placeholder="Ej: 12345678">
                 </div>
 
@@ -618,13 +618,13 @@
 
                 <div class="form-group">
                     <label>Motivo del abordaje</label>
-                    <input type="text" id="repMotivoAbordaje" placeholder="Ej: Instaladores de c&aacute;maras extraviados">
+                    <input type="text" id="repMotivoAbordaje" placeholder="Ej: Instaladores de cámaras extraviados">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Estado / Conclusi&oacute;n final</label>
-                <input type="text" id="repEstadoFinal" placeholder="Ej: Sin novedades / Se acompa&ntilde;a al sector">
+                <label>Estado / Conclusión final</label>
+                <input type="text" id="repEstadoFinal" placeholder="Ej: Sin novedades / Se acompaña al sector">
             </div>
 
             <!-- Botón para generar vista previa -->
@@ -652,7 +652,7 @@
                 <div class="menu-card" onclick="openRondinForm()">
                     <div class="menu-icon icon-tools">&#128692;</div>
                     <div class="menu-info">
-                        <h3>ROND&Iacute;N INGRESO/SALIDA</h3>
+                        <h3>RONDÍN INGRESO/SALIDA</h3>
                         <p>Formulario de control de moto y elementos de trabajo</p>
                     </div>
                 </div>
@@ -669,14 +669,14 @@
                     <div class="menu-icon icon-francos">&#128197;</div>
                     <div class="menu-info">
                         <h3>PLANILLA DE FRANCOS (ESTILO DIRECTIVA)</h3>
-                        <p>Selecci&oacute;n y formato id&eacute;ntico a la planilla oficial</p>
+                        <p>Selección y formato idéntico a la planilla oficial</p>
                     </div>
                 </div>
             </div>
 
             <!-- Formulario del Rondín -->
             <div id="form-rondin" style="display: none;">
-                <h2 class="section-title">Control de Rond&iacute;n (Soles del Oeste)</h2>
+                <h2 class="section-title">Control de Rondín (Soles del Oeste)</h2>
                 
                 <div class="form-group">
                     <label>Tipo de Reporte:</label>
@@ -692,7 +692,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Rond&iacute;n (Personal):</label>
+                    <label>Rondín (Personal):</label>
                     <input type="text" id="rondinNombre" placeholder="Ej: Franco Gonzalez">
                 </div>
 
@@ -719,7 +719,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Bid&oacute;n:</label>
+                    <label>Bidón:</label>
                     <input type="text" id="rondinBidon" value="Medio">
                 </div>
 
@@ -746,7 +746,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Bater&iacute;a Linterna:</label>
+                    <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Batería Linterna:</label>
                     <input type="text" id="rondinBateriaLinterna" value="Completa">
                 </div>
 
@@ -756,7 +756,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Bater&iacute;a Handy:</label>
+                    <label>&nbsp;&nbsp;&nbsp;&nbsp;&#128267; Batería Handy:</label>
                     <input type="text" id="rondinBateriaHandy" value="Completa">
                 </div>
 
@@ -765,7 +765,7 @@
                     <textarea id="rondinNovedades" rows="3">Sin novedades</textarea>
                 </div>
 
-                <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rond&iacute;n a WhatsApp</button>
+                <button class="btn-action" onclick="generarReporteRondinWhatsApp()">Enviar Rondín a WhatsApp</button>
             </div>
 
             <!-- Formulario del Parte del Guardia -->
@@ -801,16 +801,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label>&#128280; Ingreso de veh&iacute;culos:</label>
+                    <label>&#128280; Ingreso de vehículos:</label>
                     <input type="text" id="gIngresoVeh" placeholder="101">
                 </div>
 
                 <div class="form-group">
-                    <label>&#128280; Salida de veh&iacute;culos:</label>
+                    <label>&#128280; Salida de vehículos:</label>
                     <input type="text" id="gSalidaVeh" placeholder="128">
                 </div>
 
-                <div class="sub-section-title">COMBUSTIBLE Y BATER&Iacute;AS</div>
+                <div class="sub-section-title">COMBUSTIBLE Y BATERÍAS</div>
 
                 <div class="form-group">
                     <label>Nivel de Combustible (Moto):</label>
@@ -818,32 +818,32 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Nivel de Combustible (Bid&oacute;n):</label>
+                    <label>Nivel de Combustible (Bidón):</label>
                     <input type="text" id="gMotoBidon" value="2,5 lts">
                 </div>
 
                 <div class="form-group">
-                    <label>Bater&iacute;a Linterna Puesto (Guardia):</label>
+                    <label>Batería Linterna Puesto (Guardia):</label>
                     <input type="text" id="gLinterna1" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>Bater&iacute;a Linterna Rond&iacute;n:</label>
+                    <label>Batería Linterna Rondín:</label>
                     <input type="text" id="gLinterna2" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>Bater&iacute;a Handy Puesto (Guardia):</label>
+                    <label>Batería Handy Puesto (Guardia):</label>
                     <input type="text" id="gHandy1" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>Bater&iacute;a Handy Rond&iacute;n:</label>
+                    <label>Batería Handy Rondín:</label>
                     <input type="text" id="gHandy2" value="Completa">
                 </div>
 
                 <div class="form-group">
-                    <label>&iquest;Hay novedades o anomal&iacute;as en instalaciones/equipos?</label>
+                    <label>&iquest;Hay novedades o anomalías en instalaciones/equipos?</label>
                     <select id="gSelectorNovedades" onchange="toggleDetallesNovedadesGuardia()">
                         <option value="no">No (Mantener mi última configuración / Estándar)</option>
                         <option value="si">Sí (Modificar detalles y equipos)</option>
@@ -854,7 +854,7 @@
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Detalle Extra de Equipos e Instalaciones:</h4>
                     
                     <div class="form-group">
-                        <label>Observaci&oacute;n General:</label>
+                        <label>Observación General:</label>
                         <textarea id="gObservacion" rows="2">En orden y funcionando</textarea>
                     </div>
 
@@ -902,17 +902,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Monitores / C&aacute;maras:</label>
+                        <label>Monitores / Cámaras:</label>
                         <input type="text" id="gMonitores" value="Sin novedades">
                     </div>
 
                     <div class="form-group">
-                        <label>Pava El&eacute;ctrica:</label>
+                        <label>Pava Eléctrica:</label>
                         <input type="text" id="gPava" value="En funcionamiento y sin problemas">
                     </div>
 
                     <div class="form-group">
-                        <label>Bater&iacute;as:</label>
+                        <label>Baterías:</label>
                         <input type="text" id="gBaterias" value="2 colocadas - sin conexión">
                     </div>
                 </div>
@@ -931,7 +931,7 @@
 
                 <div class="profile-card" style="padding: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label style="font-size: 0.9rem; font-weight: bold; margin: 0;">&#128274; Sesi&oacute;n Protegida (Solo tus francos):</label>
+                        <label style="font-size: 0.9rem; font-weight: bold; margin: 0;">&#128274; Sesión Protegida (Solo tus francos):</label>
                         <span style="font-size: 0.72rem; color: #00b894; font-weight: bold;">DNI Verificado</span>
                     </div>
                     <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
@@ -946,7 +946,7 @@
                 <div class="profile-card" style="padding: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <span style="font-size: 0.85rem; font-weight: bold;">Eligiendo para: <span id="francoGuardiaActualLabel" style="color: var(--header-bg);">-</span></span>
-                        <span id="francoCupoLabel" style="font-size: 0.85rem; font-weight: bold; background: rgba(0, 184, 148, 0.15); color: #00b894; padding: 3px 8px; border-radius: 6px;">0 / 4 d&iacute;as</span>
+                        <span id="francoCupoLabel" style="font-size: 0.85rem; font-weight: bold; background: rgba(0, 184, 148, 0.15); color: #00b894; padding: 3px 8px; border-radius: 6px;">0 / 4 días</span>
                     </div>
 
                     <div class="calendar-header">
@@ -964,7 +964,7 @@
                         <div class="calendar-day-name">Mi</div>
                         <div class="calendar-day-name">Ju</div>
                         <div class="calendar-day-name">Vi</div>
-                        <div class="calendar-day-name">S&aacute;</div>
+                        <div class="calendar-day-name">Sá</div>
                         <div class="calendar-day-name">Do</div>
                     </div>
 
@@ -973,7 +973,7 @@
                     </div>
 
                     <div style="display: flex; gap: 12px; font-size: 0.75rem; margin-top: 12px; color: var(--text-muted); justify-content: center;">
-                        <span>&#129001; Tus d&iacute;as elegidos</span>
+                        <span>&#129001; Tus días elegidos</span>
                         <span>&#128997; Ocupado por otro</span>
                         <span>&#11036; Disponible</span>
                     </div>
@@ -1091,7 +1091,7 @@
                     <div class="profile-avatar">&#128104;&#8205;&#128187;</div>
                     <div class="profile-info">
                         <h3 id="perfilNombreVisual">Guardia del Puesto 2</h3>
-                        <p>Soles del Oeste &bull; Sesi&oacute;n Activa</p>
+                        <p>Soles del Oeste &bull; Sesión Activa</p>
                     </div>
                 </div>
 
@@ -1101,7 +1101,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>N&uacute;mero de Documento / DNI:</label>
+                    <label>Número de Documento / DNI:</label>
                     <input type="text" id="perfilLegajo" readonly style="background-color: var(--border-color); font-weight: 600;">
                 </div>
 
@@ -1111,13 +1111,13 @@
                 </div>
 
                 <button type="button" onclick="cerrarSesionGuardia()" style="background: none; border: 1px solid #d63031; color: #d63031; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 5px;">
-                    &#128682; Cerrar Sesi&oacute;n (Cambiar de Guardia)
+                    &#128682; Cerrar Sesión (Cambiar de Guardia)
                 </button>
             </div>
 
             <div class="profile-card">
                 <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--header-bg);">Fichaje y Control de Relevo</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Al iniciar tu jornada, el sistema cierra y contabiliza autom&aacute;ticamente el turno del compa&ntilde;ero saliente.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Al iniciar tu jornada, el sistema cierra y contabiliza automáticamente el turno del compañero saliente.</p>
                 
                 <div id="bannerPuestoActivo" style="background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem;">
                     &#128737;&#65039; <b>Puesto 2:</b> <span id="textoGuardiaEnPuesto">Sin guardia fichada actualmente</span>
@@ -1135,14 +1135,14 @@
                     <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--header-bg);">Datos del Relevo para WhatsApp:</h4>
                     
                     <div class="form-group">
-                        <label>Compa&ntilde;ero al que Relevas (Obligatorio):</label>
+                        <label>Compañero al que Relevas (Obligatorio):</label>
                         <input type="text" id="relevoCompanero" placeholder="Ej: Tobias biasucci">
                     </div>
 
                     <div class="form-group">
                         <label>Turno que Tomas:</label>
                         <select id="relevoTurno">
-                            <option value="Mañana">Ma&ntilde;ana</option>
+                            <option value="Mañana">Mañana</option>
                             <option value="Tarde">Tarde</option>
                             <option value="Noche">Noche</option>
                         </select>
@@ -1169,7 +1169,7 @@
                     <div class="calendar-day-name">Mi</div>
                     <div class="calendar-day-name">Ju</div>
                     <div class="calendar-day-name">Vi</div>
-                    <div class="calendar-day-name">S&aacute;</div>
+                    <div class="calendar-day-name">Sá</div>
                     <div class="calendar-day-name">Do</div>
                 </div>
 
@@ -1189,7 +1189,7 @@
     <nav class="bottom-nav">
         <button class="nav-item active" id="nav-btn-categorias" onclick="switchTab('categorias')">
             <span class="icon">&#127968;</span>
-            <span>Men&uacute;</span>
+            <span>Menú</span>
         </button>
         <button class="nav-item" id="nav-btn-herramientas" onclick="switchTab('herramientas')">
             <span class="icon">&#128736;</span>
@@ -1384,7 +1384,6 @@
             const miNombreUpper = sesion.nombre.toUpperCase();
             const config = obtenerGuardiasConfig();
 
-            // Buscar coincidencia exacta o por DNI asociado
             if (config[miNombreUpper]) return miNombreUpper;
 
             for (const key of Object.keys(config)) {
@@ -1395,7 +1394,6 @@
             return miNombreUpper;
         }
 
-        // Modificar turno y horario desde la tabla (SOLO TU PROPIA FILA)
         let guardiaEditandoTurno = "";
 
         function abrirModalCambiarTurno(nombreGuardia, event) {
@@ -1480,14 +1478,12 @@
             let francosMes = {...obtenerFrancosMes()};
             const ocupante = francosMes[fechaKey];
 
-            // Si es mi propio franco, me permite quitarlo
             if (ocupante && ocupante.toLowerCase() === miGuardia.toLowerCase()) {
                 delete francosMes[fechaKey];
                 db.ref(`puesto2/francos/${mesKey}`).set(francosMes);
                 return;
             }
 
-            // Si está ocupado por otro guardia, queda estrictamente bloqueado
             if (ocupante) {
                 alert(`⛔ El día ya fue elegido por ${ocupante}. No puedes modificar los francos de otro guardia.`);
                 return;
@@ -1517,10 +1513,12 @@
             document.getElementById('btnMesAnterior').style.opacity = diffActual <= 0 ? '0.3' : '1';
             document.getElementById('btnMesSiguiente').style.opacity = diffActual >= 1 ? '0.3' : '1';
 
-            // Chips informativos (solo tu chip está activo)
+            // Chips informativos (Oculta TEST APK)
             const listaContainer = document.getElementById('listaGuardiasFrancos');
             listaContainer.innerHTML = '';
             guardias.forEach(g => {
+                if (g.toUpperCase() === "TEST APK") return; // 🛑 Oculto de la vista
+
                 const count = Object.values(francos).filter(owner => owner.toLowerCase() === g.toLowerCase()).length;
                 const esMio = g.toUpperCase() === miGuardia.toUpperCase();
                 const chip = document.createElement('div');
@@ -1587,11 +1585,13 @@
                 grid.appendChild(cell);
             }
 
-            // TABLA IDÉNTICA A LA IMAGEN DE LA DIRECTIVA
+            // TABLA OFICIAL (Oculta TEST APK)
             const tbody = document.getElementById('tablaEstiloDirectivaBody');
             tbody.innerHTML = '';
 
             guardias.forEach((g) => {
+                if (g.toUpperCase() === "TEST APK") return; // 🛑 Oculto de la vista
+
                 const info = configGuardias[g] || { turno: "mañana", horario: "07HS A 15HS" };
                 const esMio = g.toUpperCase() === miGuardia.toUpperCase();
                 const turnoTexto = info.turno;
@@ -1636,6 +1636,8 @@
             texto += `----------------------------------------\n`;
 
             guardias.forEach((g) => {
+                if (g.toUpperCase() === "TEST APK") return;
+
                 const info = configGuardias[g] || { turno: "mañana", horario: "07HS A 15HS" };
                 const lineaTurno = info.turno.padEnd(12, ' ');
                 const lineaNombreHorario = `${g} (${info.horario})`.padEnd(25, ' ');
@@ -1689,7 +1691,10 @@
             const mesesNombres = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
             const nombreMes = mesesNombres[month];
 
-            const filasExcel = guardias.map(g => {
+            const filasExcel = [];
+            guardias.forEach(g => {
+                if (g.toUpperCase() === "TEST APK") return;
+
                 const info = configGuardias[g] || { turno: "mañana", horario: "07HS A 15HS" };
                 const diasOrdenados = Object.keys(francos)
                     .filter(k => francos[k].toLowerCase() === g.toLowerCase())
@@ -1699,14 +1704,14 @@
                         return `${partes[2]}/${partes[1]}`;
                     });
 
-                return {
+                filasExcel.push({
                     "SOLES": "PUESTO 2",
                     "MES": `${nombreMes} ${year}`,
                     "TURNO": info.turno,
                     "NOMBRE": g,
                     "HORARIO": info.horario,
                     "FRANCOS": diasOrdenados.join('-') || "Sin francos"
-                };
+                });
             });
 
             const nombreArchivo = `Planilla_Francos_${nombreMes}_${year}.xlsx`;
@@ -1950,7 +1955,7 @@
             const minutos = String(ahora.getMinutes()).padStart(2, '0');
             const hora24 = `${horas}:${minutos}`;
 
-            const mensaje = "*BARRIO SOLES DEL OESTE - PUESTO 2*\n\n" +
+            const mensaje = "*BARRIO SOLES DEL OESTE - Puesto 2*\n\n" +
                 "🚨 *AVISO DE INGRESO Y RELEVO DE GUARDIA*\n\n" +
                 "📅 *Fecha:* " + fecha + "\n" +
                 "⏰ *Hora de ingreso:* " + hora24 + " hs\n" +
